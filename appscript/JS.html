@@ -1,0 +1,272 @@
+<!-- © Banco Davivienda S.A. 2021-2022. Se prohíbe su uso o reproducción sin previa autorización del Banco Davivienda S.A -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
+
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
+
+<script>
+  window.onload = inicializar();
+
+window.addEventListener('load', preventFormSubmit);
+
+function preventFormSubmit() {
+  var forms = document.querySelectorAll('form');
+  for (var i = 0; i < forms.length; i++) {
+    forms[i].addEventListener('submit', function(event) {
+      event.preventDefault();
+    });
+  }
+}
+
+var urlPaginaHomeGlobal
+
+function inicializar() {
+  $("#loader").show()
+  
+  google.script.run.withFailureHandler(notificarError).withSuccessHandler(inicializarWeb).inicializarWebCreacion(formulario);
+}
+
+var indicesColumnas
+
+function inicializarWeb(res){
+  $("#loader").hide()
+  $(".vista-inicial").show()
+
+
+  urlPaginaHomeGlobal = res.urlPaginaHomeGlobal
+  indicesColumnas = res.indicesColumnas
+
+  const listas = res.listas;
+  const selects = $("select");
+  selects.each(function() {
+    const id = $(this).prop("id");
+    
+    opciones = listas.filter(filtrarListas,id);
+    for (i in opciones) {
+      $("#" + id).append("<option value='" + opciones[i][2] + "'>" + opciones[i][1] + "</option>");
+    }
+    
+  }); 
+}
+
+function filtrarListas (registro) {
+  if (registro[0] == this) return true;
+  return false;
+}
+
+function mostrarMensaje(titulo, mensaje) {
+  $("#tituloModal").empty();
+  $("#mensajeModal").empty();
+
+  $("#tituloModal").html(titulo);
+  $("#mensajeModal").html(mensaje);
+  
+  $("#modal-mensaje").modal('show');
+  
+}
+
+function notificarError(error){
+  console.log(error)
+  $("#loader").hide();
+  if(!error.titulo){
+    mostrarMensaje("Opps", `Ha ocurrido un error: ${error.message}`)
+    return
+  }
+  mostrarMensaje(error.titulo, error.mensaje)
+}
+
+function convertirFechaWeb(valor) {
+  var fechaArr = valor.split("/");
+  var d = parseInt(fechaArr[0]);
+  var m = parseInt(fechaArr[1]);
+  var a = parseInt(fechaArr[2]);
+
+  d = d < 10 ? "0" + d : d;
+  m = m < 10 ? "0" + m : m;
+
+  return [a,m,d].join("-");
+}
+
+function mostrarRegistro(registro){
+  $("#loader").hide();
+
+  $(".container-dav").hide()
+  $(".crear-individual").show()
+  
+  $('input, select').val('')
+  for (const nombreCampo in indicesColumnas.consolidado) {
+    const valor = registro[indicesColumnas.consolidado[nombreCampo] - 1];
+    if (!valor) continue;
+
+    try{
+      const tipo = $("#" + nombreCampo).prop("type");
+      if(tipo == "date") {
+        $("#" + nombreCampo).val(convertirFechaWeb(valor));
+        $("." + nombreCampo).val(convertirFechaWeb(valor));
+      } else {
+        $("#" + nombreCampo).val(valor);
+        $("." + nombreCampo).val(valor);
+      }
+    }catch(e){
+      continue
+    }
+  }
+}
+
+function mostrarDescarga(url){
+  $("#loader").hide();
+
+  mostrarMensaje("Enhorabuena", "En los próximos minutos recibirás un correo con el asunto “Plano grupos masivos” el cual tendrá la información de las cédulas seleccionadas")
+
+  $(".container-dav").hide()
+  $(".subir-documento").show()
+}
+
+function notificarRegistroExitoso() {
+  $("#loader").hide();
+  mostrarMensaje("Enhorabuena", "Los registros fueron cargados exitosamente. Ahora podrás gestionarlos desde la pantalla de contratación");
+}
+
+function registroExito(){
+  $("#loader").hide();
+  mostrarMensaje("Enhorabuena", "El registro fue cargado exitosamente. Ahora podrás gestionarlo desde la pantalla de contratación");
+  $(".container-dav").hide()
+  $(".vista-inicial").show()
+
+}
+
+let template_numero_identificacion = ` <div id="registro-###" class="form-row">
+          <div class="form-group col-sm-3">
+            <label for="numero-identificacion">Numero de identificacion</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">art_track</i>
+              </div>
+              <input id="numero-identificacion-###" name="numero-identificacion" type="text" class="form-control numero-identificacion">
+            </div>
+          </div>
+
+          <div class="col-sm-auto">
+            <br>
+            <button type="button" class="btn btn-primary my-2 boton-eliminar" data-eliminar="registro-###"><i class="bi bi-trash-fill"></i></button>
+          </div>
+        </div>`
+
+//---------------------JQuery----------------------------------
+
+$(document).ready(function(){
+  
+  $(".custom-file-input").on("change", function() {
+    var fileName = $(this).val().split("\\").pop();
+    $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+  });
+
+
+
+  $(".container-dav").on("keyup", ".miles",function() {
+    const valor = $(this).val();
+    valor = formatearMiles(valor);
+    $(this).val(valor);
+  });
+
+  let contador_registro = 0
+  $("#btn-nueva-identificacion-buscar").click(function(){
+
+    contador_registro++
+    const template_añadir = template_numero_identificacion.replace(/###/g, contador_registro.toString())
+    $("#button-añadir-personas").before(template_añadir)
+  })
+
+  $(".container-dav").on("click", ".boton-eliminar", function(){
+    const data = $(this).data()
+    $(`#${data.eliminar}`).remove()
+  })
+
+  $("#btn-subir-plano").click(function(){
+    $("#loader").show()
+    const formulario = $("#formulario-subir-plano")[0];
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarRegistroExitoso).cargarRegistrosMasivos(formulario);
+  })
+
+  $("#btn-consultar").click(function(){
+    $("#loader").show()
+
+    let numeros_identificacion = []
+
+    $(".numero-identificacion").each(function(){
+      const valor = this.value
+      if(!valor) return
+
+      numeros_identificacion.push(valor)
+    })
+
+    if(numeros_identificacion.length === 0) {
+      $("#loader").hide()
+      mostrarMensaje("Falta algo", "Debes buscar almenos un numero de identificacion")
+      return
+    }
+
+    if(numeros_identificacion.length === 1){
+      google.script.run.withFailureHandler(notificarError).withSuccessHandler(mostrarRegistro).busquedaIndividual(numeros_identificacion[0])
+    }else{
+      google.script.run.withFailureHandler(notificarError).withSuccessHandler(mostrarDescarga).busquedaMasiva(numeros_identificacion)
+    }
+  })
+
+
+  $(".btn-cambiar-vista").click(function(){
+    const data = $(this).data()
+    $(`.${data.ocultar}`).hide()
+    $(`.${data.mostrar}`).show()
+  });
+
+  $("#btn-registro-individual").click(function(){
+    $("#loader").show()
+    var camposVerificar = $("input:visible, select:visible").not(".noObligatorio :input").not(":checkbox").not(":disabled").not("[readonly]");
+    var camposPendientes = [];
+    camposVerificar.each(function(){
+
+      var val = $(this).val();
+      if (!val) {
+        var id = $(this).prop("id");
+        var label = $("[for='" + id +"']").text();
+        camposPendientes.push(label);
+      }
+    });
+
+    if (camposPendientes.length != 0) {
+      var itemsPendientes = "<ul>";
+      for (var i in camposPendientes){
+        itemsPendientes += "<li>" + camposPendientes[i] + "</li>"
+      }
+      itemsPendientes += "</ul>";
+      $("#loader").hide()
+      mostrarMensaje("Campos pendientes por diligenciar", "<p>Hace falta completar los siguientes campos</p>" + itemsPendientes);
+      return;
+    }
+
+    const formulario = $("#formulario")[0];
+    
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(registroExito).cargarRegistroIndividual(formulario)
+  })
+
+  $(".btn-volverHome").click(function(){
+    window.open(urlPaginaHomeGlobal,"_top");
+  });
+  
+  
+  $("#cigo").hover(function() {
+    $(this).stop(true, false).animate({ width: "250px" }, function() {$("#desarrollado").fadeIn(200)});
+    
+  }, function() {
+    $("#desarrollado").fadeOut(200,function() {
+      $("#cigo").stop(true, false).animate({ width: "90px" })
+    });
+    
+  });
+
+
+
+});
+
+</script>

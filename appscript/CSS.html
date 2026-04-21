@@ -1,0 +1,369 @@
+<!-- © Banco Davivienda S.A. 2021. Se prohíbe su uso o reproducción sin previa autorización del Banco Davivienda S.A -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Encode+Sans&display=swap" rel="stylesheet">
+<style>
+  //Modificacion header
+  .header-tamaño {
+    width: 100%;
+    height: 400px;
+    object-fit: none;
+  }
+
+
+  .dataTables_filter {
+    display: none;
+  }
+
+  tfoot {
+    display: table-footer-group;
+  }
+
+  .linea-vertical-izquierda {
+    border-left: 1px solid #ABAAA1;
+  }
+
+  .btn-sin-borde {
+    border: none;
+    outline: none;
+  }
+
+  .btn-sin-borde:focus {
+    border: 0;
+    outline: 0 none;
+  }
+
+  #logo-dav {
+    width: 35vw;
+  }
+
+  .texto-lider {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .color-dav {
+    background-color: #ed1c27;
+  }
+
+  .texto-color-dav {
+    color: #ed1c27;
+  }
+
+  .parrafoDescripcion {
+    font-weight: lighter;
+  }
+
+  .color-dav-grad {
+    background: linear-gradient(60deg, rgba(237, 28, 39, 1) 0%, rgba(249, 87, 87, 1) 100%);
+    /*background: linear-gradient(60deg, rgb(45, 45, 45) 0%, rgb(6, 32, 105) 100%);*/
+  }
+
+  .color-dav-grad-sinGestion {
+    /* background: linear-gradient(60deg, rgba(237,28,39,1) 0%, rgba(249,87,87,1) 100%); */
+    background: linear-gradient(60deg, #97989aff 0%, #bbaeae 100%);
+  }
+
+  .color-dav-grad-pendientes {
+    background: linear-gradient(60deg, #e4c83f 0%, #e8d883 100%);
+  }
+
+  .color-dav-grad-gestionados {
+    background: linear-gradient(60deg, #3cd448 0%, #70d694 100%);
+  }
+
+  .color-dav-grad-detalle-Contratacion {
+    background: linear-gradient(60deg, #aba1a2 0%, #bbaeae 100%);
+    0e75c3ff
+  }
+
+  .color-dav-grad-detalle-Contratacion-titulo {
+    background: linear-gradient(60deg, #0e75c3ff 0%, #0e75c3ff 100%);
+  }
+
+  .color-dav-grad-detalle-Carnetizacion-titulo {
+    background: linear-gradient(60deg, #0e75c3ff 0%, #0e75c3ff 100%);
+  }
+
+  .color-dav-grad-detalle-Alistamiento {
+    background: linear-gradient(60deg, #6aa84fff 0%, #6aa84fff 100%);
+  }
+
+  .container-dav {
+    margin: 20px auto;
+    width: 90%;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    border-radius: .3rem;
+  }
+
+  .card-panel {
+    margin: .5rem 0 1rem 0;
+    padding: 10px;
+    border-radius: 8px;
+  }
+
+  .btn-primary {
+    background-color: #ed1c27;
+    border-color: #ed1c27;
+
+    /*background-color: #062069;
+  border-color: #062069;*/
+  }
+
+  .btn-primary-sinGesion {
+    background-color: #ed1c27;
+    border-color: #ed1c27;
+    color: #ffffff;
+  }
+
+  .btn-primary-pendiente {
+    background-color: #e4c83f;
+    border-color: #e4c83f;
+    color: #ffffff;
+  }
+
+  .btn-primary-gestionado {
+    background-color: #28ce57;
+    border-color: #28ce57;
+    color: #ffffff;
+  }
+
+  .btn-primary:hover {
+    background-color: #d80b16;
+    border-color: #d80b16;
+
+    /*background-color: #01103c;
+  border-color: #01103c;*/
+  }
+
+  .btn-primary.focus,
+  .btn-primary:focus {
+    background-color: #d80b16;
+    border-color: #d80b16;
+    box-shadow: 0 0 0 0.2rem rgba(225, 83, 97, .5);
+
+    /*background-color: #01103c;
+    border-color: #01103c;
+    box-shadow: 0 0 0 0.2rem rgba(17, 59, 177, 0.5);*/
+  }
+
+  .btn-primary:not(:disabled):not(.disabled).active,
+  .btn-primary:not(:disabled):not(.disabled):active,
+  .show>.btn-primary.dropdown-toggle {
+    background-color: #d80b16;
+    border-color: #d80b16;
+
+    /*background-color: #01103c;
+  border-color: #01103c;*/
+  }
+
+
+  .shadow-dav {
+    -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+  }
+
+
+  .container-flex {
+    flex: 1 0 auto;
+  }
+
+  html,
+  body {
+    height: 100%;
+  }
+
+
+  body {
+    background-color: #fdfdfd;
+    font-family: 'Encode Sans', sans-serif;
+
+    display: flex;
+    flex-direction: column;
+  }
+
+  table {
+    with: 100%;
+    font-size: 0.85em;
+  }
+
+  .table thead th,
+  .table td {
+    vertical-align: middle;
+    padding: .5rem;
+  }
+
+  th {
+    background-color: #ed1c27;
+
+    /*background-color: #062069;*/
+    color: white;
+    text-align: center;
+  }
+
+  #encabezadosSinGestion th {
+    background-color: #ed1c27;
+  }
+
+  #encabezadosPendientes th {
+    background-color: #e4c83f;
+  }
+
+  #encabezadosGestionados th,
+  encabezadosSeleccionLider th {
+    background-color: #28ce57;
+  }
+
+
+  tfoot th {
+    background-color: #A0A0A0;
+  }
+
+
+
+  /* tfoot th {
+  background-color: #28ce57;
+} */
+
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button,
+  input[type=date]::-webkit-inner-spin-button,
+  input[type=date]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+
+
+
+  /* Marca CIGO */
+  #cigo {
+    background-color: #0000009e;
+    color: white;
+    padding: 10px;
+    position: fixed;
+    right: 20px;
+    bottom: 10px;
+    z-index: 10;
+    border-radius: 30px;
+  }
+
+  #desarrollado {
+    white-space: nowrap;
+  }
+
+  a:hover {
+    text-decoration: none;
+  }
+
+  /* /Marca CIGO */
+
+  #loader {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 2;
+
+  }
+
+
+  .img-esc {
+    float: left;
+    width: 15vw;
+    margin: 15px 40px;
+  }
+
+  #cigo .img-esc {
+    float: left;
+    width: 65px;
+    margin: 0;
+  }
+
+
+  .waves {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 5vh;
+  }
+
+  /* Animation */
+
+  .parallax>use {
+    animation: move-forever 25s cubic-bezier(.55, .5, .45, .5) infinite;
+  }
+
+  .parallax>use:nth-child(1) {
+    animation-delay: -2s;
+    animation-duration: 7s;
+  }
+
+  .parallax>use:nth-child(2) {
+    animation-delay: -3s;
+    animation-duration: 10s;
+  }
+
+  .parallax>use:nth-child(3) {
+    animation-delay: -4s;
+    animation-duration: 13s;
+  }
+
+  .parallax>use:nth-child(4) {
+    animation-delay: -5s;
+    animation-duration: 20s;
+  }
+
+  @keyframes move-forever {
+    0% {
+      transform: translate(-90px, 0%);
+    }
+
+    100% {
+      transform: translate(85px, 0%);
+    }
+  }
+
+  footer #logo-dav-blanco {
+    width: 10vw;
+  }
+
+
+  /** Media Query **/
+
+  @media only screen and (max-width: 600px) {
+    .waves {
+      height: 5vh;
+    }
+
+    #logo-dav-blanco {
+      width: 60vw;
+    }
+
+    #img-mob {
+      display: block !important;
+    }
+
+    #logo-dav {
+      width: 70vw;
+    }
+
+    #header-dav .img-esc {
+      display: none;
+    }
+
+    #titulo {
+      margin: 0 auto 0.5rem !important;
+      text-align: center;
+      padding: 0;
+    }
+
+
+
+  }
+</style>
