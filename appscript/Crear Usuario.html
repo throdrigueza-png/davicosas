@@ -1,0 +1,926 @@
+<!-- © Banco Davivienda S.A. 2021-2022. Se prohíbe su uso o reproducción sin previa autorización del Banco Davivienda S.A -->
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+    integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+  <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css"> -->
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+
+  <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"> -->
+  <?!= include('CSS'); ?>
+
+</head>
+
+<body>
+  <div class="container-flex">
+    <div>
+      <div id="header-dav">
+        <div class="text-center headerGenerico headerContratacion">
+
+          <img class="header-tamaño" src="https://drive.google.com/thumbnail?sz=w5000&id=1TzIRnqsOy_qJKVWvQJ2PIC18rkY9PWu1"></img>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-dav vista-inicial" style="display:none">
+      <div class="row">
+        <div class="col-sm-3  my-2">
+          <button  type="button" class="btn btn-primary btn-volverHome">
+          <span style="display: flex;flex-direction: row;">
+            <i class="material-icons" style="padding-right:8px;">home</i>
+            Volver al Home
+          </span>
+        </button>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="row">
+        <div class="col-sm-auto my-2">
+          <b>¿Qué deseas hacer?</b>
+        </div>
+        <div class="col-sm-auto">
+          <button  type="button" class="btn btn-primary btn-cambiar-vista" data-ocultar="container-dav" data-mostrar="buscar-personas">
+            <span style="display: flex;flex-direction: row;">
+              <i class="material-icons" style="padding-right:8px;">person</i>
+              Crear personas
+            </span>
+          </button>
+        </div>
+        <div class="col-sm-auto">
+          <button  type="button" class="btn btn-primary btn-cambiar-vista" data-ocultar="container-dav" data-mostrar="subir-documento">
+            <span style="display: flex;flex-direction: row;">
+              <i class="material-icons" style="padding-right:8px;">file_upload</i>
+              Subir personas de forma masiva
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-dav buscar-personas" style="display:none">
+
+      <div class="row">
+        <div class="col-sm-3  my-2">
+          <button  type="button" class="btn btn-primary btn-cambiar-vista" data-ocultar="container-dav" data-mostrar="vista-inicial">
+          <span style="display: flex;flex-direction: row;">
+            <i class="material-icons" style="padding-right:8px;">arrow_back</i>
+            Volver
+          </span>
+        </button>
+        </div>
+      </div>
+
+      <form id="formulario-consulta" autocomplete="off">
+        <div class="form-row" id="registro-1">
+          <div class="form-group col-sm-3">
+            <label for="numero-identificacion">Numero de identificacion</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">art_track</i>
+              </div>
+              <input id="numero-identificacion" name="numero-identificacion" type="text" class="form-control numero-identificacion">
+            </div>
+          </div>
+          <div class="col-sm-auto">
+            <br>
+            <button type="button" class="btn btn-primary my-2 boton-eliminar" data-eliminar="registro-1"><i class="bi bi-trash-fill"></i></button>
+          </div>
+        </div>
+
+        <div class="form-row" id="button-añadir-personas">
+          <div class="col-sm-auto">
+            <button id="btn-nueva-identificacion-buscar" type="button" class="btn btn-secondary ">
+              <span style="display: flex;flex-direction: row;">
+                <i class="material-icons" style="padding-right:8px;">person_add</i>
+                Añadir otra cedula a buscar
+              </span>
+            </button>
+          </div>
+
+          <div class="col-sm-auto">
+            <button id="btn-consultar" type="button" class="btn btn-primary col-sm-auto">
+              <span style="display: flex;flex-direction: row;">
+                <i class="material-icons" style="padding-right:8px;">find_in_page</i>
+                Buscar usuarios
+              </span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="container-dav subir-documento" style="display:none">
+      <div class="row">
+        <div class="col-sm-3  my-2">
+          <button  type="button" class="btn btn-primary btn-cambiar-vista" data-ocultar="container-dav" data-mostrar="vista-inicial">
+          <span style="display: flex;flex-direction: row;">
+            <i class="material-icons" style="padding-right:8px;">arrow_back</i>
+            Volver
+          </span>
+        </button>
+        </div>
+      </div>
+      <form class="row" id="formulario-subir-plano">
+        <div class="form-group col-sm-auto">
+          <label for="plano_masivo">Cargar archivo plano</label>
+          <div class="input-group">
+            <div class="custom-file">
+              <input type="file" class="custom-file-input" id="plano_masivo" name="plano_masivo">
+              <label class="custom-file-label" for="plano_masivo">Seleccionar Arhivo</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-auto">
+          <br>
+          <button id="btn-subir-plano" type="button" class="btn btn-primary col-sm-auto my-2">
+            <span style="display: flex;flex-direction: row;">
+              <i class="material-icons" style="padding-right:8px;">cloud_upload</i>
+              Cargar personas
+            </span>
+          </button>
+        </div>
+      </form>
+
+
+    </div>
+
+    <div class="container-dav crear-individual" style="display:none">
+      <div class="row">
+        <div class="col-sm-3  my-2">
+          <button  type="button" class="btn btn-primary btn-cambiar-vista" data-ocultar="container-dav" data-mostrar="buscar-personas">
+          <span style="display: flex;flex-direction: row;">
+            <i class="material-icons" style="padding-right:8px;">arrow_back</i>
+            Volver
+          </span>
+        </button>
+        </div>
+      </div>
+
+      <div class="card-panel color-dav-grad-detalle-Contratacion shadow-dav">
+        <h4 style="margin: 0px; color:white;">Datos Básicos</h4>
+      </div>
+
+      <form id="formulario" onsubmit="enviarFormularioGestion(this)" autocomplete="off">
+
+        <input id="area" name="area" type="text" class="form-control" hidden >
+        <input id="id" name="id" type="text" class="form-control" hidden >
+
+        <div class="form-row">
+          <div class="form-group col-sm">
+            <label for="primerNombre">Primer Nombre</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">person</i>
+              </div>
+              <input id="primerNombre" name="primerNombre" type="text" class="form-control " readonly>
+            </div>
+          </div>
+
+          <div class="form-group col-sm ">
+            <label for="segundoNombre">Segundo Nombre</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">person</i>
+              </div>
+              <input id="segundoNombre" name="segundoNombre" type="text" class="form-control " readonly>
+            </div>
+          </div>
+
+          <div class="form-group col-sm">
+            <label for="primerApellido">Primer Apellido</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">person</i>
+              </div>
+              <input id="primerApellido" name="primerApellido" type="text" class="form-control " readonly>
+            </div>
+          </div>
+
+          <div class="form-group col-sm ">
+            <label for="segundoApellido">Segundo Apellido</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">person</i>
+              </div>
+              <input id="segundoApellido" name="segundoApellido" type="text" class="form-control " readonly>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row ">
+          <div class="form-group col-sm">
+            <label for="tipoDocumento">Tipo Documento</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">credit_card</i>
+              </div>
+              <input id="tipoDocumento" name="tipoDocumento" type="text" class="form-control ">
+            </div>
+          </div>
+
+          <div class="form-group col-sm">
+            <label for="numCedula">Numero Documento</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">credit_card</i>
+              </div>
+              <input id="numCedula" name="numCedula" type="text" class="form-control " readonly>
+            </div>
+          </div>
+
+          <div class="form-group col-sm">
+            <label for="compania">Empresa</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">business</i>
+              </div>
+              <input id="compania" name="compania" type="text" class="form-control ">
+            </div>
+          </div>
+
+          <div class="form-group col-sm">
+            <label for="telCelular">Número Celular</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">settings_cell</i>
+              </div>
+              <input id="telCelular" name="telCelular" type="text" class="form-control ">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row ">
+          <div class="form-group col-sm">
+            <label for="correo">Correo Personal</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">email</i>
+              </div>
+              <input id="correo" name="correo" type="text" class="form-control ">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3  ">
+            <label for="fechaNacimiento">Fecha Nacimiento</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">perm_contact_calendar</i>
+              </div>
+              <input id="fechaNacimiento" name="fechaNacimiento" type="text" class="form-control ">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3  ">
+            <label for="fechaExpCedula">Fecha Exp Cédula</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">perm_contact_calendar</i>
+              </div>
+              <input id="fechaExpCedula" name="fechaExpCedula" type="text" class="form-control ">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 ">
+            <label for="ciudadExpedicion">Ciudad Exp Cédula</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">perm_contact_calendar</i>
+              </div>
+              <input id="ciudadExpedicion" name="ciudadExpedicion" type="text" class="form-control ">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row ">
+          <div class="form-group col-sm-3 ">
+            <label for="ciudadNacimiento">Ciudad Nacimiento</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">perm_contact_calendar</i>
+              </div>
+              <input id="ciudadNacimiento" name="ciudadNacimiento" type="text" class="form-control">
+            </div>
+          </div>
+        </div>
+
+        <input id="linkCarpDigital" name="linkCarpDigital" type="text" hidden>
+
+
+        <div class="card-panel color-dav-grad-detalle-Contratacion shadow-dav">
+          <h4 style="margin: 0px; color:white;">Datos Adicionales</h4>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-sm-3      divLider">
+            <label for="tipoContrato">Tipo de Contrato</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">business_center</i>
+              </div>
+              <input id="tipoContrato" name="tipoContrato" type="text" class="form-control" >
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3  divLider">
+            <label for="tipoSalario">Tipo de Salario</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">business_center</i>
+              </div>
+              <input id="tipoSalario" name="tipoSalario" type="text" class="form-control" >
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3      divLider">
+            <label for="codigoSucursal">Sucursal</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">business_center</i>
+              </div>
+              <input id="codigoSucursal" name="codigoSucursal" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3      divLider">
+            <label for="nombreCargo">Cargo</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">perm_identity</i>
+              </div>
+              <input id="nombreCargo" name="nombreCargo" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3      divLider">
+            <label for="posicionContratacion">No Posición</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">assignment</i>
+              </div>
+              <input id="posicionContratacion" name="posicionContratacion" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3     divLider">
+            <label for="departamentoContratacion">Centro de Costos</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">account_balance</i>
+              </div>
+              <input id="departamentoContratacion" name="departamentoContratacion" type="text" class="form-control">
+            </div>
+          </div>
+
+          <!-- <div class="form-group col-sm-3 " hidden>
+            <label for="rangoSalarial">Rango Salarial</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">monetization_on</i>
+              </div>
+              <input id="rangoSalarial" name="rangoSalarial" type="text" class="form-control">
+            </div>
+          </div> -->
+
+          <div class="form-group col-sm-3     divLider">
+            <label for="codigoDependencia">Código de dependencia</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">code</i>
+              </div>
+              <input id="codigoDependencia" name="codigoDependencia" type="text" class="form-control codDepartamento">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3      divLider">
+            <label for="nombreDependecia">Nombre de Dependencia</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">location_city</i>
+              </div>
+              <input id="nombreDependecia" name="nombreDependecia" type="text" class="form-control ubicEstructura">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 ">
+            <label for="salario">Sueldo</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">monetization_on</i>
+              </div>
+              <input id="salario" name="salario" type="number" class="form-control ">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3      divLider">
+            <label for="fechaInicioLabo">Fecha de Ingreso</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">date_range</i>
+              </div>
+              <input id="fechaInicioLabo" name="fechaInicioLabo" type="date" class="form-control ">
+            </div>
+          </div>
+
+          <!-- <div class="form-group col-sm-3     " hidden>
+            <label for="fechaAntiguendadEnElGrupo">Fecha Antiguedad en el Grupo</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">date_range</i>
+              </div>
+              <input id="fechaAntiguendadEnElGrupo" name="fechaAntiguendadEnElGrupo" type="text" class="form-control nolimitefecha">
+            </div>
+          </div> -->
+
+          <div class="form-group col-sm-3      divLider ">
+            <label for="fechaIngresoGrupo">Fecha de Ingreso al Grupo</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">date_range</i>
+              </div>
+              <input id="fechaIngresoGrupo" name="fechaIngresoGrupo" type="date" class="form-control  nolimitefecha">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3     divLider">
+            <label for="reintegro">Reintegro</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">short_text</i>
+              </div>
+              <input id="reintegro" name="reintegro" type="text" class="form-control" >
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3     divLider">
+            <label for="ubicacion">Ubicación Física Funcionario</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">place</i>
+              </div>
+              <input id="ubicacion" name="ubicacion" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3      divLider">
+            <label for="vicepresidencias">Vicepresidencia</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">location_city</i>
+              </div>
+              <input id="vicepresidencias" name="vicepresidencias" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3     divLider">
+            <label for="nombreLiderPosicion">Jefe Inmediato de Vacante</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">person</i>
+              </div>
+              <input id="nombreLiderPosicion" name="nombreLiderPosicion" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3     divLider">
+            <label for="extensionJefe">Ext. Jefe Inmediato</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">local_phone</i>
+              </div>
+              <input id="extensionJefe" name="extensionJefe" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 ">
+            <label for="consultor">Consultor</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">person</i>
+              </div>
+              <input id="consultor" name="consultor" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 ">
+            <label for="dirEntrega">Dirección Residencia / Entrega</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">directions_transit</i>
+              </div>
+              <input id="dirEntrega" name="dirEntrega" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3     ">
+            <label for="catCargo">Categoria del Cargo</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">perm_identity</i>
+              </div>
+              <input id="catCargo" name="catCargo" type="text" class="form-control" >
+            </div>
+          </div>
+
+          <!-- <div class="form-group col-sm-3 " hidden>
+            <label for="cargoSaghi">Cargo SAGHI</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">person</i>
+              </div>
+              <input id="cargoSaghi" name="cargoSaghi" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 " hidden>
+            <label for="reqUniforme">Requiere Uniforme</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">accessibility</i>
+              </div>
+              <input id="reqUniforme" name="reqUniforme" type="text" class="form-control">
+            </div>
+          </div> -->
+
+          <div class="form-group col-sm-3 ">
+            <label for="correoConsultor">Correo Consultor</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">person</i>
+              </div>
+              <input id="correoConsultor" name="correoConsultor" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 ">
+            <label for="idRequisicion">N Requisición</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">filter_1</i>
+              </div>
+              <input id="idRequisicion" name="idRequisicion" type="text" class="form-control" >
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3     divLider">
+            <label for="justificacion">Motivo Vacante</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">short_text</i>
+              </div>
+              <input id="justificacion" name="justificacion" type="text" class="form-control" >
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3      divLider">
+            <label for="ciudadEntrega">Ciudad de Residencia / Entrega</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">short_text</i>
+              </div>
+              <input id="ciudadEntrega" name="ciudadEntrega" type="text" class="form-control">
+            </div>
+          </div>
+
+          <!-- <div class="form-group col-sm-3     " hidden>
+            <label for="tipoUbicacion">Tipo de Ubicación</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">place</i>
+              </div>
+              <input id="tipoUbicacion" name="tipoUbicacion" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3     " hidden>
+            <label for="jornadaLaboral">Jornada Laboral</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">date_range</i>
+              </div>
+              <input id="jornadaLaboral" name="jornadaLaboral" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3" hidden>
+            <label for="nuevaPosicion">Nueva Posición</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">person</i>
+              </div>
+              <input id="nuevaPosicion" name="nuevaPosicion" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3" hidden>
+            <label for="subEmpresa">Empresa</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">business</i>
+              </div>
+              <input id="subEmpresa" name="subEmpresa" type="text" class="form-control">
+            </div>
+          </div> -->
+
+          <div class="form-group col-sm-3 ">
+            <label for="duracionContrato">Duración del contrato</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">assignment</i>
+              </div>
+              <select id="duracionContrato" name="duracionContrato" class="form-control custom-select">
+                  <option value="" selected disabled hidden>Selecciona</option>
+                </select>
+              <!-- <input id="duracionContrato" name="duracionContrato" type="text" class="form-control" > -->
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3  ">
+            <label for="fechaVencimientoContrato">Fecha Vencimiento del Contrato</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">date_range</i>
+              </div>
+              <input id="fechaVencimientoContrato" name="fechaVencimientoContrato" type="date" class="form-control" readonly>
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 ">
+            <label for="tiempoPeriodoPrueba">Tiempo periodo de prueba</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">date_range</i>
+              </div>
+              <input id="tiempoPeriodoPrueba" name="tiempoPeriodoPrueba" type="text" class="form-control" readonly>
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3">
+            <label for="modalidadTrabajo">Modalidad de trabajo</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">short_text</i>
+              </div>
+              <input id="modalidadTrabajo" name="modalidadTrabajo" class="form-control " >
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 ">
+            <label for="actaAprobacionCargo">Acta Aprobación Cargo</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">assignment</i>
+              </div>
+              <input id="actaAprobacionCargo" name="actaAprobacionCargo" type="text" class="form-control">
+            </div>
+          </div>
+
+
+          <div class="form-group col-sm-3  ">
+            <label for="correoLider">Correo Lider</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">email</i>
+              </div>
+              <input id="correoLider" name="correoLider" type="email" class="form-control">
+            </div>
+          </div>
+
+
+          <div class="form-group col-sm-3  ">
+            <label for="correoPadrino">Correo Padrino</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">email</i>
+              </div>
+              <input id="correoPadrino" name="correoPadrino" type="email" class="form-control">
+            </div>
+          </div>
+
+          <!-- <div class="form-group col-sm-3" hidden>
+            <label for="departamento">Departamento</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">assignment</i>
+              </div>
+              <input id="departamento" name="departamento" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3" hidden>
+            <label for="ciudad">Ciudad</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">assignment</i>
+              </div>
+              <input id="ciudad" name="ciudad" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 div-aprendizaje   " hidden>
+            <label for="fechaIniEtapaLecti">Fecha Inicio Etapa Lectivo</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">date_range</i>
+              </div>
+              <input id="fechaIniEtapaLecti" name="fechaIniEtapaLecti" type="date" class="form-control divSENA">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3  " hidden>
+            <label for="fechaFinEtapaLecti">Fecha Fin Etapa Lectivo</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">date_range</i>
+              </div>
+              <input id="fechaFinEtapaLecti" name="fechaFinEtapaLecti" type="date" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3    " hidden>
+            <label for="fechaIniEtapaPrac">Fecha Inicio Etapa Práctica</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">date_range</i>
+              </div>
+              <input id="fechaIniEtapaPrac" name="fechaIniEtapaPrac" type="date" class="form-control">
+            </div>
+          </div>
+          <div class="form-group col-sm-3  " hidden>
+            <label for="fechaFinEtapaPrac">Fecha Fin Etapa Práctica</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">date_range</i>
+              </div>
+              <input id="fechaFinEtapaPrac" name="fechaFinEtapaPrac" type="date" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3  " hidden>
+            <label for="fechaInicioCarnetizacion">Fecha inicio carnetización</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">date_range</i>
+              </div>
+              <input id="fechaInicioCarnetizacion" name="fechaInicioCarnetizacion" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 " hidden>
+            <label for="fechaInicioAlistamiento">Fecha inicio alistamiento</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">date_range</i>
+              </div>
+              <input id="fechaInicioAlistamiento" name="fechaInicioAlistamiento" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 " hidden>
+            <label for="fechaInicioAprendizaje">Fecha inicio aprendizaje</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">date_range</i>
+              </div>
+              <input id="fechaInicioAprendizaje" name="fechaInicioAprendizaje" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 " hidden>
+            <label for="fechaCreacionSARH">Fecha Creación Pipol</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">date_range</i>
+              </div>
+              <input id="fechaCreacionSARH" name="fechaCreacionSARH" type="text" class="form-control fechaCreacionSARH" >
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3" hidden>
+            <label for="puestoFisico">Puesto Fisico</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">assignment</i>
+              </div>
+              <input id="puestoFisico" name="puestoFisico" type="text" class="form-control" >
+            </div>
+          </div>
+
+          <div class="form-group col-sm-6 " hidden>
+            <label for="nCtaNomina">N Cuenta Nómina</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">payment</i>
+              </div>
+              <input id="nCtaNomina" name="nCtaNomina" type="text" maxlength="12" class="form-control">
+            </div>
+          </div> -->
+          <div class="form-group col-sm">
+            <label for="tipoProceso">Tipo de proceso</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">payment</i>
+              </div>
+              <select id="tipoProceso" name="tipoProceso" class="form-control custom-select">
+                <option value="" selected disabled hidden>Selecciona</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-3  my-2">
+            <button id="btn-registro-individual" type="button" class="btn btn-primary" data-ocultar="container-dav" data-mostrar="buscar-personas">
+          <span style="display: flex;flex-direction: row;">
+            <i class="material-icons" style="padding-right:8px;">contacts</i>
+            Registrar usuario
+          </span>
+        </button>
+          </div>
+        </div>
+    </div>
+    </form>
+  </div>
+  </div>
+
+  <?!= include('Footer'); ?>
+
+  <!-- Templates -->
+
+  </div>
+
+
+
+
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="modal-mensaje" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <h3 class="modal-title texto-color-dav" id="tituloModal"></h3>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <div id="mensajeModal" class="modal-body"></div>
+
+
+        <div class="modal-footer" style="border-top: none;">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- /Modal -->
+
+  <!-- Loader -->
+  <div id="loader" style="display:none">
+    <div class="text-center" style="margin: 15% auto;">
+      <div class="spinner-grow text-dark" role="status" style="width: 12rem; height: 12rem;">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+  </div>
+  <!-- /Loader -->
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <?!= include('Crear Usuario JS'); ?>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+    integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous">
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js"
+    integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous">
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.3/moment-with-locales.min.js"></script>
+
+  <!-- <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script> -->
+
+</body>
+
+</html>

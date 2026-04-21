@@ -1,0 +1,1829 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
+
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
+
+<script>
+  window.onload = inicializar();
+
+window.addEventListener('load', preventFormSubmit);
+
+function preventFormSubmit() {
+  var forms = document.querySelectorAll('form');
+  for (var i = 0; i < forms.length; i++) {
+    forms[i].addEventListener('submit', function(event) {
+      event.preventDefault();
+    });
+  }
+}
+
+var area;
+var banderaListas = 1;
+var genero = "";
+var tipoDeSalario = "";
+var tipoDeContrato = "";
+
+function inicializar() {
+  
+  google.script.url.getLocation(function(location) {
+    
+    $(".headerGenerico").hide();
+
+    if(location.parameter.area) {
+      area = location.parameter.area;
+      var tituloCaja = $("#tituloActual")
+      
+      $(".divContratacion").hide();
+      $(".divAlistamiento").hide();
+      $(".divAprendizaje").hide();
+      $(".divCarnetizacion").hide();
+      $(".divLider").hide();
+      $(".pantalla-lider").hide()
+      if(area == "Contratacion") {
+        $(".headerContratacion").show();
+        $(".divContratacion").show();
+        tituloCaja.append("Contratación");
+      } else if (area == "Carnetizacion"){
+        $(".headerCarnetizacion").show();
+        $(".divCarnetizacion").show();
+        $(".readonlyCarnetizacion :input").prop("disable", true)
+        tituloCaja.append("Carnetización");
+      } else if (area == "Alistamiento") { 
+        $(".headerAlistamiento").show();
+        $(".divAlistamiento").show();
+        tituloCaja.append("Alistamiento");
+      } else if (area == "Aprendizaje") {
+        $(".headerAprendizaje").show();
+        $(".divAprendizaje").show();
+        tituloCaja.append(area);
+      } else if (area == "Lider") {
+        $(".headerLider").show();
+        //$(".divLider").show();
+        
+        tituloCaja.append(area);
+      }
+    } else {
+      mostrarMensaje("Atención","No se especificó el area que está ingresando");
+      return;
+    } 
+    $("#loader").show(); 
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(inicializarTablaWeb).inicializarWebGestion(area);
+  });
+
+}
+var urlPaginaHomeGlobal;
+let es_inicializado = false
+var tabla_gestion, tabla_pendiente, tabla_sin_gestion
+function inicializarTablaWeb(datos) {
+
+  $(".container-dav").hide();
+  $("#div-tablasGestion").show();
+  if(area!="Lider"){
+    $("#texto-lider").prop("hidden",true)
+  }else{
+    $("#texto-lider").prop("hidden",false)
+  }
+
+  
+  if (datos.registros.length == 0) {
+    mostrarMensaje("No existen datos", "No tienes ningun registro para gestionar");
+    $("#loader").hide();
+    return;
+  }
+  urlPaginaHomeGlobal = datos.urlPaginaHome;
+  console.log("tamaño es: " + datos.registros.length);
+  indicesColumnas = datos.indicesColumnas;
+
+  registros = datos.registros
+    .sort((a, b) => b[indicesColumnas.consolidado.cargoCritico - 1].localeCompare(a[indicesColumnas.consolidado.cargoCritico - 1]))
+    .sort((a, b) => new Date(b[indicesColumnas.consolidado.fechaInicioLabo - 1]).getTime() - new Date(a[indicesColumnas.consolidado.fechaInicioLabo - 1]).getTime())
+
+  try{
+    tabla_gestion.destroy();
+    tabla_pendiente.destroy();
+    tabla_sin_gestion.destroy();
+  }catch(e){
+    console.log(e)
+  }
+
+  
+  var encabezados = $(".encabezados");
+  encabezados.empty();
+  var footer = $(".footer")
+  footer.empty()
+  var encabezadosLider = $(".encabezadosLider");
+  encabezadosLider.empty();
+  var encabezadosLiderSeleccion = $(".encabezadosLiderSeleccion");
+  encabezadosLiderSeleccion.empty();
+  datosVistas = datos.datosVistas;
+  datosVistasSeleccion = datos.datosVistasSeleccion;
+  var columnaTabla = 0;
+
+  encabezados.append("<th style='min-width:150px'>Estado</th>");
+  footer.append("<th style='min-width:150px'></th>");
+
+  datos.datosVistas.forEach(function(datoVista, i) {
+    encabezados.append(`<th style='min-width:150px'>${datos.encabezados[datoVista[1] - 1]}</th>`);
+    // footer.append(`<th> <input type="text" placeholder="${datos.encabezados[datoVista[1] - 1]}" data-index="${i + 1}" /> </th>`)
+    columnaTabla++;
+  });
+
+  var registrosSinGestion = $("#registrosSinGestion");
+  registrosSinGestion.empty();
+
+  var registrosPendientes = $("#registrosPendientes");
+  registrosPendientes.empty();
+
+  var registrosGestionados = $("#registrosGestionados");
+  registrosGestionados.empty();
+
+  var registrosSeleccionLider = $("#registrosSeleccionLider");
+  registrosSeleccionLider.empty();
+
+  var registrosContratacionLider = $("#registrosContratacionLider");
+  registrosContratacionLider.empty();
+
+  var registrosAlistamientoLider = $("#registrosAlistamientoLider");
+  registrosAlistamientoLider.empty();
+
+  var registrosRequisicionLider = $("#registrosRequisicionLider")
+  registrosRequisicionLider.empty()
+
+  var registrosInduccionLider = $("#registrosInduccionLider");
+  registrosInduccionLider.empty();
+  
+  var registrosTabla;
+  var registrosTablaSeleccionLider;
+  
+  var filaTabla;
+  var filaTablaLider;
+  var templateCheck = $("#templateCheck").html();
+  var templateDetalles;
+  var templateDetallesLider;
+  var templateDetallesSinGestion = $("#templateDetallesSinGestion").html();
+  var templateDetallesPendiente = $("#templateDetallesPendiente").html();
+  var templateDetallesGestionado = $("#templateDetallesGestionado").html();
+  var templateDetallesRequisicion=$("#templateDetallesRequisicion").html()
+  //var templateDetallesLiderSeleccion = $("#templateDetallesLiderSeleccion").html();
+  var id, campo, nombreCampo;
+
+  switch(area) {
+    case "Contratacion" : 
+      columna = indicesColumnas.consolidado.gestionContratacion;
+      break;
+    case "Carnetizacion":
+      columna = indicesColumnas.consolidado.gestionCarnetizacion;
+      break;
+    case "Alistamiento" :
+      columna = indicesColumnas.consolidado.gestionAlistamiento;
+      break;
+    case "Aprendizaje" :
+      columna = indicesColumnas.consolidado.gestionAprendizaje;
+      break;
+    case "Lider" :
+
+      $("#encabezadosRequisicionLider").prop("hidden",false)
+      encabezadosLider.append("<th style='min-width:150px'>Estado</th>");
+      
+      datos.datosVistas.forEach(function(datoVista, i) {
+        encabezadosLider.append("<th style='min-width:150px'>" + datos.encabezados[datoVista[1] - 1] + "</th>");
+        columnaTabla++;
+      });
+
+      datos.datosVistasSeleccion.forEach(function(datoVista, i) {
+        encabezadosLiderSeleccion.append("<th style='min-width:150px'>" + datos.encabezados[datoVista[1] - 1] + "</th>");
+      });
+
+      
+      break;
+    default:
+      throw "No se encontró la columna gestion para el area: " + area;
+      break;
+  }
+
+  var filaTablaRequisicion
+  var cargo=[]
+
+  var requicioneUnicas = registros.reduce((acc,item)=>{
+      if(!acc.includes(item[indicesColumnas.consolidado["idRequisicion"]-1])){
+      	acc.push(item[indicesColumnas.consolidado["idRequisicion"]-1]);
+        cargo.push(item[indicesColumnas.consolidado["nombreCargo"]-1]);
+      }
+      return acc;
+    },[])
+  
+  for(var i in requicioneUnicas){
+
+    filaTablaRequisicion = "<tr id='fila_requision" + requicioneUnicas[i] + "'>";
+
+    filaTablaRequisicion += "<td class='text-center'>"  + requicioneUnicas[i] + "</td>";
+    filaTablaRequisicion += "<td class='text-center'>"  + cargo[i] + "</td>";
+    filaTablaRequisicion += "<td class='text-center'>"  + templateDetallesRequisicion.replace(/#id/g, requicioneUnicas[i]) +"</td>";   
+    filaTablaRequisicion += "</tr>";
+    registrosRequisicionLider.append(filaTablaRequisicion);
+  }
+
+  for (var iFila in registros) {
+    
+    if (area != "Lider") {
+      $(".pantallaNoLider").not(".gestion-tabla").show();
+      $(".gestion-tabla").hide()
+      $(".pantallaLider").hide();
+      if (registros[iFila][columna - 1] == "Sin Gestion" || registros[iFila][columna - 1] == "Pendiente Gestión"){
+        registrosTabla = registrosSinGestion;
+        templateDetalles = templateDetallesSinGestion;
+      } else if (registros[iFila][columna - 1] == "Pendiente") {
+        registrosTabla = registrosPendientes;
+        templateDetalles = templateDetallesPendiente;
+      } else if (registros[iFila][columna - 1] == "Gestionado" || registros[iFila][columna - 1] == "No aplica") {
+        registrosTabla = registrosGestionados;
+        templateDetalles = templateDetallesGestionado;
+      }
+    } else {
+      var estadosSinGestion = ["Sin Gestion", "Pendiente"]
+      $(".pantallaNoLider").hide();
+      $(".pantallaLider").show();
+      registrosTablaSeleccionLider = registrosSeleccionLider;
+      
+      //templateDetallesLider = templateDetallesLiderSeleccion;
+      templateDetalles = templateDetallesGestionado
+      if (registros[iFila][indicesColumnas.consolidado["gestionContratacion"] - 1] == "Gestionado" && 
+        estadosSinGestion.indexOf(registros[iFila][indicesColumnas.consolidado["gestionAlistamiento"] - 1]) != -1) {
+        registrosTabla = registrosAlistamientoLider;
+        templateDetalles = templateDetallesGestionado;
+        // break;
+      } else if (registros[iFila][indicesColumnas.consolidado["gestionAlistamiento"] - 1] == "Gestionado" && 
+        estadosSinGestion.indexOf(registros[iFila][indicesColumnas.consolidado["gestionAprendizaje"] - 1]) != -1) {
+        registrosTabla = registrosInduccionLider;
+        templateDetalles = templateDetallesGestionado;
+        // break;
+      } else {
+        registrosTabla = registrosContratacionLider;
+        templateDetalles = templateDetallesGestionado; 
+      }
+    }
+    
+    
+    id = registros[iFila][indicesColumnas.consolidado["id"] - 1];
+
+    if (area != "Lider") {
+
+      filaTabla = "<tr id='fila_" + id + "'>";
+      filaTabla += "<td>" + templateDetalles.replace(/#id/g, id) +"</td>";    
+      for (var iVista in datosVistas) {
+        if(iVista=="0" && registros[iFila][datosVistas[iVista][1] - 1]=="Si" ){
+          filaTabla += "<td'><i class='bi bi-exclamation-triangle-fill'></i>" + registros[iFila][datosVistas[iVista][1] - 1] + "</td>";
+        }else{
+          filaTabla += "<td>" + registros[iFila][datosVistas[iVista][1] - 1] + "</td>";
+        }
+        
+      }
+      filaTabla += "</tr>";
+      registrosTabla.append(filaTabla);
+
+    } else {
+
+      filaTabla = "<tr id='fila_" + id + "'>";
+      filaTablaLider = "<tr id='filaLider_" + id + "'>";
+      filaTabla += "<td>" + templateDetalles.replace(/#id/g, id) +"</td>";      
+      for (var iVista in datosVistas) {
+        filaTabla += "<td>" + registros[iFila][datosVistas[iVista][1] - 1] + "</td>";
+      }
+
+      for (var iVista in datosVistasSeleccion) {
+        filaTablaLider += "<td>" + registros[iFila][datosVistasSeleccion[iVista][1] - 1] + "</td>";
+      }
+
+      filaTabla += "</tr>";
+      filaTablaLider += "</tr>";
+      registrosTabla.append(filaTabla);
+      registrosTablaSeleccionLider.append(filaTablaLider); 
+    }
+    
+  }
+
+  //genero = indicesColumnas.consolidado["Genero"]; --Lógica de gestión de Checks
+  
+  if (banderaListas == 1) {
+    var listas = datos.listas;
+
+    var selects = $("select");
+    selects.each(function() {
+      var id = $(this).prop("id");
+      
+      opciones = listas.filter(filtrarListas,id);
+      for (i in opciones) {
+        $("#" + id).append("<option value='" + opciones[i][2] + "'>" + opciones[i][1] + "</option>");
+      }
+      
+    }); 
+  }
+  
+  $('#documFaltantes').selectpicker();
+  $("#loader").hide();
+
+
+  if(!es_inicializado){
+    $('#tablaGestion thead tr').clone(true).addClass('filters').appendTo( '#tablaGestion thead' )
+    $('#tablaAlistamiento thead tr').clone(true).addClass('filters').appendTo( '#tablaAlistamiento thead' );
+    $('#tablaAprendizaje thead tr').clone(true).addClass('filters').appendTo( '#tablaAprendizaje thead' );
+    
+  }
+
+  
+  
+  es_inicializado = true
+
+  tabla_gestion = $('#tablaGestion').DataTable( {
+    // scrollY: '400px',
+    //   scrollX: true,
+    //   scrollCollapse: true,
+      paging: false,
+      language: {
+        "search": "Buscador:",
+        "zeroRecords": "No se han encontrado resultados",
+        "info":"Total de resultados _TOTAL_",
+        "infoEmpty": "No tienes nada por gestionar en este tablero",
+      },
+      "search": {
+        "caseInsensitive": false
+      },
+      orderCellsTop: true,
+      // fixedHeader: true,
+      initComplete: function() {
+        console.log('es_inicializado')
+          var api = this.api();
+          // For each column
+          api.columns().eq(0).each(function(colIdx) {
+              
+              // Set the header cell to contain the input element
+              var cell = $('#tablaGestion_wrapper .filters th').eq($(api.column(colIdx).header()).index());
+              var title = $(cell).text();
+
+              if(colIdx === 0) {
+                $(cell).html('');
+                return
+              }
+              $(cell).html( '<input type="text" placeholder="'+title+'" />' );
+              // On every keypress in this input
+              $('input', $('#tablaGestion_wrapper .filters th').eq($(api.column(colIdx).header()).index()) )
+                  .off('keyup change')
+                  .on('keyup change', function (e) {
+                      e.stopPropagation();
+                      // Get the search value
+                      $(this).attr('title', $(this).val());
+                      var regexr = '({search})'; //$(this).parents('th').find('select').val();
+                      var cursorPosition = this.selectionStart;
+                      // Search the column for that value
+                      api
+                          .column(colIdx)
+                          .search((this.value != "") ? regexr.replace('{search}', '((('+this.value+')))') : "", this.value != "", this.value == "")
+                          .draw();
+                          // $(this).blur()
+
+                      $('#registrosSinGestion .btn-detalles')[0].focus()   
+                      $(this).focus()
+                      // $(this).focus()[0].setSelectionRange(cursorPosition, cursorPosition);
+                      
+                  });
+          });
+      }
+  } );
+  
+
+  tabla_pendiente = $('#tablaAprendizaje').DataTable( {
+    // scrollY: '400px',
+      // scrollX: true,
+      // scrollCollapse: true,
+      paging: false,
+      language: {
+        "search": "Buscador:",
+        "zeroRecords": "No se han encontrado resultados",
+        "info":"Total de resultados _TOTAL_",
+        "infoEmpty": "No tienes nada por gestionar en este tablero",
+      },
+      "search": {
+        "caseInsensitive": false
+      },
+      orderCellsTop: true,
+      // fixedHeader: true,
+      initComplete: function() {
+          var api = this.api();
+          // For each column
+          api.columns().eq(0).each(function(colIdx) {
+              
+              // Set the header cell to contain the input element
+              var cell = $('#tablaAprendizaje_wrapper .filters th').eq($(api.column(colIdx).header()).index());
+              var title = $(cell).text();
+
+              if(colIdx === 0) {
+                $(cell).html('');
+                return
+              }
+              $(cell).html( '<input type="text" placeholder="'+title+'" />' );
+              // On every keypress in this input
+              $('input', $('#tablaAprendizaje_wrapper .filters th').eq($(api.column(colIdx).header()).index()) )
+                  .off('keyup change')
+                  .on('keyup change', function (e) {
+                      e.stopPropagation();
+                      // Get the search value
+                      $(this).attr('title', $(this).val());
+                      var regexr = '({search})'; //$(this).parents('th').find('select').val();
+                      var cursorPosition = this.selectionStart;
+                      // Search the column for that value
+                      api
+                          .column(colIdx)
+                          .search((this.value != "") ? regexr.replace('{search}', '((('+this.value+')))') : "", this.value != "", this.value == "")
+                          .draw();
+
+                        $('#registrosPendientes .btn-detalles')[0].focus()  
+                        $(this).focus()
+                          
+                      // $(this).blur()
+                      // $(this).focus()[0].setSelectionRange(cursorPosition, cursorPosition);
+                  });
+          });
+      }
+  } );
+
+  
+  tabla_sin_gestion = $('#tablaAlistamiento').DataTable( {
+    // scrollY: '400px',
+      // scrollX: true,
+      // scrollCollapse: true,
+      paging: false,
+      language: {
+        "search": "Buscador:",
+        "zeroRecords": "No se han encontrado resultados",
+        "info":"Total de resultados _TOTAL_",
+        "infoEmpty": "No tienes nada por gestionar en este tablero",
+      },
+      "search": {
+        "caseInsensitive": false
+      },
+      orderCellsTop: true,
+      // fixedHeader: true,
+      initComplete: function() {
+          var api = this.api();
+          // For each column
+          api.columns().eq(0).each(function(colIdx) {
+              
+              // Set the header cell to contain the input element
+              var cell = $('#tablaAlistamiento_wrapper .filters th').eq($(api.column(colIdx).header()).index());
+              var title = $(cell).text();
+
+              if(colIdx === 0) {
+                $(cell).html('');
+                return
+              }
+              $(cell).html( '<input type="text" placeholder="'+title+'" />' );
+              // On every keypress in this input
+              $('input', $('#tablaAlistamiento_wrapper .filters th').eq($(api.column(colIdx).header()).index()) )
+                  .off('keyup change')
+                  .on('keyup change', function (e) {
+                      e.stopPropagation();
+                      // Get the search value
+                      $(this).attr('title', $(this).val());
+                      var regexr = '({search})'; //$(this).parents('th').find('select').val();
+                      var cursorPosition = this.selectionStart;
+                      // Search the column for that value
+                      api
+                          .column(colIdx)
+                          .search((this.value != "") ? regexr.replace('{search}', '((('+this.value+')))') : "", this.value != "", this.value == "")
+                          .draw();
+
+                          $('#registrosGestionados .btn-detalles')[0].focus()  
+                          $(this).focus()
+                      // $(this).focus()[0].setSelectionRange(cursorPosition, cursorPosition);
+                  });
+          });
+      }
+  } );
+
+  $("table").css("width","100%")
+}
+
+function llenarTabla(datos) {
+
+  var registros = datos.registros;
+
+  if (registros.length == 0) {
+    mostrarMensaje("No existen datos", "No se encontró ningún registro");
+    $("#loader").hide();
+    return;
+  }
+
+  var templateCheck = $("#templateCheck").html();
+  var templateSelect = $("#templateSelect").html();
+  var templateTextArea = $("#templateTextArea").html();
+  
+  var tabla = $("#registrosTabla");
+  tabla.empty();
+  var id;
+  for (var i in registros) {
+
+    id = registros[i].id;
+    tabla.append(
+      "<tr>" +
+        "<td>" + registros[i].numCedula + "</td>" +
+        "<td>" + registros[i].primerNombre + "</td>" +
+        "<td>" + registros[i].puesto + "</td>" +
+        "<td>" + registros[i].fechaCreacionRequisicion + "</td>" +
+      "</tr>"
+    );
+  }
+  
+  $("#loader").hide();
+}
+
+
+function filtrarListas (registro) {
+  if (registro[0] == this) return true;
+  return false;
+}
+
+function enviarFormulario(formulario) {
+  $("#loader").show();
+  google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificaRegistroExitoso).registrarFormulario(formulario);
+}
+
+function notificaRegistroExitoso(datos) {
+  $("#loader").hide();
+//  $("#formulario")[0].reset();
+//  $("#formulario :input").val("");
+//  $("label.custom-file-label").text("");
+  
+  mostrarMensaje("Registro Guardado", "<p>La solicitud se ha registrado exitosamente</p>" + 
+    "<b>ID Solicitud: </b>" + datos.id + "<br/>");
+    
+}
+
+function enviarFormularioGestion(formulario) {
+  var area = $("#area").val();
+  var hvSarh = $("#hvCreadaSARH").val();
+  var gestion = $("#gestionado").val();
+
+  if (gestion == "Gestionado" && area == "Contratacion" && hvSarh != "SI") {
+    mostrarMensaje("Alerta", "Debes tener la HV creada en PIPOL antes de continuar");
+    return;
+  }
+
+  const tipo_contrato = $("#tipoContrato").val()
+  const fecha_vencimiento_contrato = $("#fechaVencimientoContrato")
+
+  var camposVerificar = $("input:visible, select:visible").not(".noObligatorio :input").not(":checkbox").not(":disabled").not("[readonly]");
+  var camposPendientes = [];
+  camposVerificar.each(function(){
+
+    if(tipo_contrato === "Término indefinido" && this.id === "fechaVencimientoContrato") return
+
+    var val = $(this).val();
+    if (!val) {
+      var id = $(this).prop("id");
+      var label = $("[for='" + id +"']").text();
+      camposPendientes.push(label);
+    }
+  });
+
+  if (camposPendientes.length != 0 && gestion == "Gestionado") {
+    var itemsPendientes = "<ul>";
+    for (var i in camposPendientes){
+      itemsPendientes += "<li>" + camposPendientes[i] + "</li>"
+    }
+    itemsPendientes += "</ul>";
+
+    mostrarMensaje("Campos pendientes por diligenciar", "<p>Hace falta completar los siguientes campos</p>" + itemsPendientes);
+    return;
+  }
+
+  $("#loader").show();
+  google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarGuardadoExitoso).registrarFormularioGestion(formulario);
+}
+
+function notificarGuardadoExitoso() {
+  $(".grupo-tabla-masivo").collapse("hide")
+  $("#agenda-masiva").prop("hidden",true)
+  
+  window.onload = inicializar();
+  banderaListas = 0;
+  $("#loader").hide();
+  mostrarMensaje("Datos Guardados!", "Los registros fueron guardados exitosamente");
+}
+
+function notificarEnvioCorreo() {
+  $("#loader").hide();
+  mostrarMensaje("Correo Enviado!", "El correo se envió exitosamente");
+}
+
+function guardadoAgendamientoMasivo(res){
+  console.log(res)
+  
+  notificarEnvioCorreo()
+
+  var {idsGuardados, fechaHoraAgenda} = res
+
+  // var fechaFormateada =  moment(fechaHoraAgenda).format("YYYY-MM-DDTHH:mm")
+  // console.log({fechaFormateada})
+
+
+  for(const id of idsGuardados){
+    console.log(id)
+    posicionId = registros.findIndex((r) => r[0] === id) 
+    if(!posicionId) continue
+    registros[posicionId][141] = fechaHoraAgenda
+
+  }
+
+  const idActual = $('#id').val()
+  if(!idsGuardados.includes(idActual)) return
+
+  $('#citaContratacion').val(fechaHoraAgenda)
+}
+
+function validarCamposSena(){
+  const categoriaCargo = $("#catCargo").val()
+  const tipoContrato = $("#tipoContrato").val()
+  if(categoriaCargo.toString().trim().toUpperCase() === "APRENDIZ SENA" || tipoContrato.toString().trim().toUpperCase() === "APRENDIZ SENA"){
+
+    const fechaIniEtapaPrac = $("#fechaIniEtapaPrac").val()
+    const fechaFinEtapaPrac = $("#fechaFinEtapaPrac").val()
+
+    if(!fechaIniEtapaPrac || !fechaFinEtapaPrac){
+      mostrarMensaje("Opps",`Si la categoria del cargo es "APRENDIZ SENA" debes diligenciar primero  los campos:
+      <br>
+      <ul>
+        <li>Fecha Inicio Etapa Práctica</li>
+        <li>Fecha Fin Etapa Práctica</li>
+      </ul>`)
+      return false
+    }
+  }
+  return true
+}
+
+function convertirFechaWeb(valor) {
+  var fechaArr = valor.split("/");
+  var d = parseInt(fechaArr[0]);
+  var m = parseInt(fechaArr[1]);
+  var a = parseInt(fechaArr[2]);
+
+  d = d < 10 ? "0" + d : d;
+  m = m < 10 ? "0" + m : m;
+
+  return [a,m,d].join("-");
+}
+
+/**
+* Formatea un valor para ser mostrado con la separación de miles
+* @param {Number} valor Ingresa el valor a ser formateado
+* @return {String} formato formateado
+*/
+function formatearMiles (valor) {
+  valor = valor.toString();
+  valor = valor.replace(/\./g,"");
+  valor = valor.replace(/[^0-9\.]/ig,"");
+  
+  var formato = valor.toString().split(",");
+  formato[0] = formato[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  formato = formato.join(",");
+  return formato;
+}
+
+function mostrarMensaje(titulo, mensaje) {
+   $("#tituloModal").empty();
+  $("#mensajeModal").empty();
+
+  $("#tituloModal").html(titulo);
+  $("#mensajeModal").html(mensaje);
+  
+  $("#modal-mensaje").modal('show');
+  
+}
+
+function notificarError(error) {
+  $("#loader").hide();
+  mostrarMensaje("Oops!", error );
+}
+
+var auxContadorGrupoMasivo=1
+var arrayIdUnico=[]
+var posicionGrupoMasivo=[]
+
+function crearGrupoMasivo(){
+  if(auxContadorGrupoMasivo > 6){
+    mostrarMensaje("Importante","Limite de grupo alcanzados")
+    return
+  }
+   
+  var template=$("#templateBotonAgendaMasiva").html();
+  template=template.replace(/###/g, auxContadorGrupoMasivo);
+  $("#grupos-masivos").append(template)
+
+  template=$("#templateTabla").html()
+  template=template.replace(/###/g, auxContadorGrupoMasivo);
+  $("#tablas-masivas").append(template)
+  auxContadorGrupoMasivo++
+  
+}
+var banderaMasivo=false
+function adicionGrupo(btn){
+  var numero = $(btn).data("id")
+  var contadorRegistros = $(".contadorEtiqueta-"+numero).length;
+
+  // if(contadorRegistros>20){
+  //   mostrarMensaje("Importante","Ha superado la cantidad maxima de usuario en este grupo")
+  //   return
+  // }
+
+  var id = $("#id").val()
+  if(arrayIdUnico.includes(id)){
+    mostrarMensaje("Importante","Este usuario ya esta en un grupo")
+    return
+  }
+
+  arrayIdUnico.push(id)
+
+  var numeroCedula=$("#numCedula").val()
+  var primerNombre=$("#primerNombre").val()
+  var segundoNombre=$("#segundoNombre").val()
+  var primerApellido=$("#primerApellido").val()
+  var segundoApellido=$("#segundoApellido").val()
+
+  var filaTabla = "<tr id='fila-masivo-"+id+"'>";
+      filaTabla +="<td class='text-center contadorEtiqueta-"+numero+"'> <input id='"+id+"-"+numero+"' name='"+id+"-"+numero+"' type='checkbox' value='"+id+"' class='check-"+numero+" noDeshabilitar'> </td>";
+      filaTabla +="<td class='text-center'>" +primerNombre+" "+primerApellido+" </td>";
+      filaTabla +="<td class='text-center'>" +numeroCedula+" </td>";
+      filaTabla +="<td class='text-center'> <button id='btn-grupo-masivo"+id+"' data-id='"+id+"' type='button' onclick='eliminarPersonaGrupoMasivo(this)' class='btn btn-primary'> Eliminar </button> </td>";
+      filaTabla +="</tr>"
+  $("#registros-"+numero).append(filaTabla)
+
+}
+
+function eliminarPersonaGrupoMasivo(btn){
+  var id = $(btn).data("id");
+  $("#fila-masivo-"+id).remove()
+  for (var i=0;i<arrayIdUnico.length;i++){
+    if(arrayIdUnico[i]!=id)continue
+    console.log(arrayIdUnico[i])
+    arrayIdUnico.splice(i,1)
+  }
+}
+
+function colapse(btn){
+  const numero = $(btn).data("id");
+  $(".grupo-tabla-masivo").collapse("hide")
+  $("#tabla-registrar").val(numero)
+  $(`#grupo-tabla-masivo-${numero}`).collapse("show");
+}
+
+function mostrarBotonesGrupo(){
+  $(".grupos").attr("hidden",false)
+  $(".back-grupo").attr("hidden",true)
+  $(".tabla-grupo-masivos").attr("hidden",true)
+}
+
+function abrirTablaGrupo(grupo){
+  $(".back-grupo").attr("hidden",false)
+  $(".grupos").attr("hidden",true)
+  $("#tabla-masiva-"+grupo).attr("hidden",false)
+}
+
+
+//---------------------JQuery----------------------------------
+
+$(document).ready(function(){
+  
+  $(".custom-file-input").on("change", function() {
+    var fileName = $(this).val().split("\\").pop();
+    $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+  });
+
+  $(".duracion_contrato").change(function(){
+
+    const tipo_contrato = $("#tipoContrato")
+    const fecha_vencimiento_contrato = $("#fechaVencimientoContrato")
+    const perido_prueba = $("#tiempoPeriodoPrueba")
+
+    var duracion_contrato = $("#duracionContrato").val()
+    
+    if(tipo_contrato.val().toString().trim().toUpperCase() === "APRENDIZ SENA") return
+
+    if(!duracion_contrato){
+      mostrarMensaje("Oppps","Debes diligenciar el campo: Duracion del contratro")
+      return
+    }
+
+    
+    if(tipo_contrato.val() === "Término indefinido" || duracion_contrato === "Indefinido"){
+      fecha_vencimiento_contrato.val("")
+      perido_prueba.val(`2 Meses`)
+    }else{
+      const fecha_inicio_labores = $("#fechaInicioLabo").val()
+      if(!fecha_inicio_labores) {
+        mostrarMensaje("Oppps", "Debes diligenciar el campo: Fecha de Ingreso")
+        return
+      }
+
+      duracion_contrato = Number(duracion_contrato)
+
+      const fecha_vencimiento_contrato = moment(fecha_inicio_labores).add(duracion_contrato, `M`).add(-1, `d`).format("YYYY-MM-DD")
+
+      
+      $("#fechaVencimientoContrato").val(fecha_vencimiento_contrato)
+
+      if(duracion_contrato > 0 && duracion_contrato < 12){
+        const dias_perido_prueba = (duracion_contrato * 30) / 5
+        perido_prueba.val(`${dias_perido_prueba} Dias`)
+        return
+      }
+      perido_prueba.val(`2 Meses`)
+    }
+  })
+
+  $(".container-dav").on("click", ".btn-detalles-requisicion",function() {
+
+    var id = $(this).prop("id").split("_")[1];
+    var datosRegistro = registros.filter(r => r[indicesColumnas.consolidado["idRequisicion"]- 1] == id && r[indicesColumnas.consolidado["estadoGeneral"]- 1]!="Desistido");
+    $("#mensajeModal").empty()
+    $("#tituloModal").html("Canditatos requision #"+id)
+    for(var i in datosRegistro){
+      var template=$("#templateUsuarioRequision").html()
+      template=template.replace(/PRIMER-NOMBRE/g,datosRegistro[i][indicesColumnas.consolidado["primerNombre"]-1])
+      template=template.replace(/SEGUNDO-NOMBRE/g,datosRegistro[i][indicesColumnas.consolidado["segundoNombre"]-1])
+      template=template.replace(/PRIMER-APELLIDO/g,datosRegistro[i][indicesColumnas.consolidado["primerApellido"]-1])
+      template=template.replace(/SEGUNDO-APELLIDO/g,datosRegistro[i][indicesColumnas.consolidado["segundoApellido"]-1])
+      template=template.replace(/CEDULA-USUARIO/g,datosRegistro[i][indicesColumnas.consolidado["numCedula"]-1])
+      template=template.replace(/FECHA-INGRESO/g,datosRegistro[i][indicesColumnas.consolidado["fechaIngreso"]-1])
+
+      var fechaIngreso= datosRegistro[i][indicesColumnas.consolidado["fechaIngreso"]-1].split("/")
+      fechaIngreso=new Date(fechaIngreso[2],fechaIngreso[1]-1,fechaIngreso[0])
+      var fechaActual = new Date();
+      diferenciaDias=Math.round((fechaIngreso.getTime() - fechaActual.getTime())/ (1000*60*60*24))
+      if(diferenciaDias<0){
+        diferenciaDias=0
+      }
+      template=template.replace(/cantidaddias/g,diferenciaDias)
+
+      
+
+      const estadoContratacion=datosRegistro[i][indicesColumnas.consolidado["gestionContratacion"]-1]
+      const estadoAprendizaje=datosRegistro[i][indicesColumnas.consolidado["gestionAprendizaje"]-1]
+      const estadoCarnetizacion=datosRegistro[i][indicesColumnas.consolidado["gestionCarnetizacion"]-1]
+      const estadoAlistamiento=datosRegistro[i][indicesColumnas.consolidado["gestionAlistamiento"]-1]
+      
+      if(estadoContratacion=="Sin Gestion" || estadoContratacion==""){
+        template=template.replace(/porcentajeContratacion/g,"0")
+      }
+      if(estadoContratacion=="Gestionado"){
+        template=template.replace(/porcentajeContratacion/g,"100")
+      }
+      if(estadoContratacion=="Pendiente" || estadoContratacion == "Pendiente Gestión"){
+        template=template.replace(/porcentajeContratacion/g,"50")
+      }
+
+      if(estadoCarnetizacion=="Sin Gestion" || estadoCarnetizacion==""){
+        template=template.replace(/porcentajeCarnetizacion/g,"0")
+      }
+      if(estadoCarnetizacion=="Gestionado"){
+        template=template.replace(/porcentajeCarnetizacion/g,"100")
+      }
+      if(estadoCarnetizacion=="Pendiente" || estadoContratacion == "Pendiente Gestión"){
+        template=template.replace(/porcentajeCarnetizacion/g,"50")
+      }
+
+      if(estadoAprendizaje=="Sin Gestion" || estadoAprendizaje==""){
+        template=template.replace(/porcentajeAprendizaje/g,"0")
+      }
+      if(estadoAprendizaje=="Gestionado"){
+        template=template.replace(/porcentajeAprendizaje/g,"100")
+      }
+      if(estadoAprendizaje=="Pendiente" || estadoContratacion == "Pendiente Gestión"){
+        template=template.replace(/porcentajeAprendizaje/g,"50")
+      }
+
+      if(estadoAlistamiento=="Sin Gestion" || estadoAlistamiento==""){
+        template=template.replace(/porcentajeAlistamiento/g,"0")
+      }
+      if(estadoAlistamiento=="Gestionado"){
+        template=template.replace(/porcentajeAlistamiento/g,"100")
+      }
+      if(estadoAlistamiento=="Pendiente" || estadoContratacion == "Pendiente Gestión"){
+        template=template.replace(/porcentajeAlistamiento/g,"50")
+      }
+      $("#mensajeModal").append(template)
+    }
+    
+    $("#modal-mensaje").modal('show');
+
+  })
+
+
+
+  $(".container-dav").on("keyup", ".miles",function() {
+    const valor = $(this).val();
+    valor = formatearMiles(valor);
+    $(this).val(valor);
+  });
+
+  $("#btn-correoAcceso").click(function(){
+    $("#loader").show();
+    const id = $("#id").val();
+
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarEnvioCorreo).enviarCorreoAccesos(id);
+
+  })
+
+  $("#btn-entregaKit").click(function(){
+    $("#loader").show();
+    const id = $("#id").val();
+
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarEnvioCorreo).enviarCorreoEntregaKit(id);
+
+  })
+
+  $("#btn-citaInduccion").click(function(){
+    $("#loader").show();
+    const id = $("#id").val();
+
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarEnvioCorreo).enviarCorreoInduccion(id);
+
+  })
+
+  $("#btn-citaInduccion2").click(function(){
+    $("#loader").show();
+    const id = $("#id").val();
+    const citacionRealInduccion = $("#citacionRealInduccion").val();
+    const contenidoCargado = $("#contenidoCargado").val();
+
+    const formulario = $("#formulario")[0];
+
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarEnvioCorreo).enviarCorreoInduccion2(formulario);
+
+  });
+
+  $("#btn-agendarInduccion").click(function(){
+    $("#loader").show();
+    const id = $("#id").val();
+    const citacionRealInduccion = $("#citacionRealInduccion").val();
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarEnvioCorreo).agendarInduccion(id, citacionRealInduccion);
+
+  });
+
+  $("#btn-verCalendarioInduccion").click(function(){
+    $("#div-calendarioInduccion").show();
+  });
+
+  
+
+  $("#btn-induccionFinalizada").click(function(){
+    $("#loader").show();
+    const id = $("#id").val();
+
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarEnvioCorreo).enviarCorreoInduccionFinalizada(id);
+
+  })
+
+  $("#btn-cargueDocExitoso").click(function(){
+    $("#loader").show();
+    const formulario = $("#formulario")[0];
+
+    const camposCompletos = validarCamposSena()
+    if(!camposCompletos){
+      $("#loader").hide();
+      return
+    } 
+
+    const documentos_completos = $("#documCompletos").val();
+    if(!documentos_completos){
+      notificarError("Debe diligenciar SI o NO en Documentos Completos", "");
+      return
+    }
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarEnvioCorreo).cargueDocExitoso(formulario);
+  })
+
+  $("#btn-asignacionContrato").click(function(){
+    $("#loader").show();
+    const id = $("#id").val();
+
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarEnvioCorreo).asignacionContrato(id);
+
+  })
+
+  $("#btn-firmaContrato").click(function(){
+    $("#loader").show();
+    const id = $("#id").val();
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarEnvioCorreo).firmaContrato(id);
+
+  })
+
+  $("#btn-fechaIngreso").click(function(){
+    $("#loader").show();
+    const id = $("#id").val();
+    const formulario = $("#formulario")[0];
+    
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarEnvioCorreo).fechaIngreso(formulario);
+
+  });
+  
+
+  $("#btn-agendarContratacionMasivo").click(function() {
+    //$("#loader").show();
+    const id = $("#id").val();
+    const citaContratacion = $("#citaContratacion").val();
+    const respContrato = $("#respContrato").val();
+    $("#agenda-masiva").prop("hidden",false);
+    $(".grupo-tabla-masivo").collapse("hide")
+    // $("#tabla-registrar").val("")
+  });
+
+
+  $("#btn-agendarContratacion").click(function() {
+    $("#loader").show();
+    const id = $("#id").val();
+    const citaContratacion = $("#citaContratacion").val();
+    const respContrato = $("#respContrato").val();
+
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarEnvioCorreo).citarContratacion(id, citaContratacion, respContrato);
+  });
+
+  $("#btn-verCalendarioContratacion").click(function() {
+    $("#div-calendarioContratacion").show();
+  });
+
+  
+
+  $("#btn-hvCreadaSARH").click(function(){
+    $("#loader").show();
+    const id = $("#id").val();
+
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarEnvioCorreo).hvCreadaSARH(id);
+
+  })
+
+  $("#btn-despachoKit").click(function(){
+    $("#loader").show();
+    const id = $("#id").val();
+
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarEnvioCorreo).despachoKit(id);
+
+  })
+
+  $("#btn-envioAlistamiento").click(function(){
+    $("#loader").show();
+    const camposCompletos = validarCamposSena()
+    if(!camposCompletos){
+      $("#loader").hide();
+      return
+    } 
+
+    const formulario = $("#formulario")[0];
+
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarEnvioCorreo).envioAlistamiento(formulario);
+
+  })
+
+  $("#btn-envioContratacion").click(function(){
+    $("#loader").show();
+    const id = $("#id").val();
+    const formulario = $("#formulario")[0];
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarEnvioCorreo).envioContratacion(formulario);
+
+  })
+
+  $("#btn-envioFinalizacionContratacion").click(function(){
+    $("#loader").show();
+    const id = $("#id").val();
+
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarEnvioCorreo).envioFinalizacionContratacion(id);
+
+  })
+
+  $("#btn-envioSeccionTres").click(function(){
+    $("#loader").show();
+    const id = $("#id").val();
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarEnvioCorreo).envioArchivoProveedor(id);
+  })
+
+  $("#btn-envioSeccionCuatro").click(function(){
+    $("#loader").show();
+    const formulario = $("#formulario")[0];
+
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarEnvioCorreo).envioContrato(formulario);
+  })
+
+  $("#btn-enviarGestionUsuarios2").click(function(){
+    if($("#usuarioCorreo2").val() != "No"){
+      mostrarMensaje("Importante","No requiere alertar gestion de usuarios")
+      return
+    }
+
+    $("#loader").show();
+    const formulario = $("#formulario")[0];
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarEnvioCorreo).envioCorreoGestionUsuario2(formulario);
+
+  })
+
+  $("#btn-enviarGestionUsuarios").click(function(){
+    if($("#usuarioCorreo").val()!="No"){
+      mostrarMensaje("Importante","No requiere alertar gestion de usuarios")
+      return
+    }
+
+    $("#loader").show();
+    const formulario = $("#formulario")[0];
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarEnvioCorreo).envioCorreoGestionUsuario(formulario);
+  })
+
+  $("#btn-enviarMicroinformatica").click(function(){
+    $("#loader").show();
+    var id = $("#id").val();
+    var formulario = $("#formulario")[0];
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarEnvioCorreo).enviarMicroinformatica(formulario);
+
+  })
+
+  $("#btn-enviarConfirmacion").click(function(){
+    $("#loader").show();
+    var formulario = $("#formulario")[0];
+
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarEnvioCorreo).enviarConfirmacion(formulario);
+
+  });
+
+  $("#btn-recordatorioConfirmacion").click(function(){
+    $("#loader").show();
+    var formulario = $("#formulario")[0];
+
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarEnvioCorreo).enviarRecordatorioConfirmacion(formulario);
+
+  });
+
+
+  $("#btn-enviarExperiencia").click(function(){
+    $("#loader").show();
+    var id = $("#id").val();
+
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarEnvioCorreo).envioFinalizacionContratacion(id);
+
+  })
+
+  $("#btn-enviarXplora").click(function(){
+    $("#loader").show();
+    var formulario = $("#formulario")[0];
+
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarEnvioCorreo).enviarXplora(formulario);
+
+  })
+
+  $("#btn-enviarPlanPadrino").click(function(){
+    $("#loader").show();
+    var id = $("#id").val();
+
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarEnvioCorreo).enviarPlanPadrino(id);
+
+  })
+
+  $("#btn-enviarRecordatorioFoto").click(function(){
+    $("#loader").show();
+    var formulario = $("#formulario")[0];
+
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarEnvioCorreo).enviarRecordatorioFoto(formulario);
+
+  })
+
+  $("#btn-accessMobile").click(function(){
+    $("#loader").show();
+    var formulario = $("#formulario")[0];
+
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarEnvioCorreo).enviarCodigoAccessMobile(formulario);
+  })
+  
+  // $("input[type=date]").not(".nolimitefecha").change(function(){
+  //   console.log($(this).val())
+  //   var input = moment($(this).val());
+  //   var actual = moment().format("YYYY-MM-DD")
+  //   //console.log({input,actual})
+  //   if(input.isBefore(actual)){
+  //     $(this).val("")
+  //     mostrarMensaje("Importante","La fecha debe ser igual o superior a la fecha actual")
+  //   }
+    
+  // })
+
+  // $("input[type=datetime-local]").not(".nolimitefecha").change(function(){
+
+  //   var input = moment($(this).val())
+  //   var actual = moment().format()
+
+  //   if(input.isBefore(actual)){
+  //     $(this).val("")
+  //     mostrarMensaje("Importante","La fecha y hora debe ser igual o superior a la fecha actual")
+  //   }
+  // })
+
+  
+
+  
+
+  // $("#btn-enviarExperienciaAprendizaje").click(function(){
+  //   $("#loader").show();
+  //   var id = $("#id").val();
+
+  //   google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarEnvioCorreo).enviarExperienciaAprendizaje(id);
+
+  // })
+  
+  // $("#btn-enviarNPS").click(function(){
+  //   $("#loader").show();
+  //   var id = $("#id").val();
+
+  //   google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarEnvioCorreo).enviarNPS(id);
+
+  // })
+
+  $("#btn-desistir").click(function(){
+    $(".div-desistirProceso").show();
+  });
+  
+  $("#btn-guardar-desiste").click(function(){
+    var motivo = $("#motivoDesiste").val();
+    if (!motivo) {
+      mostrarMensaje("Selecciona un motivo por el cual se desiste el proceso");
+      return;
+    }
+    $("#loader").show();
+    var id = $("#id").val();
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarGuardadoExitoso).enviarCorreoDesiste(id, motivo);
+  });
+
+
+  $(".container-dav").on("click", ".btn-detalles",function() {
+    console.log('hola')
+    var id = $(this).prop("id").split("_")[1];
+    var datosRegistro = registros.filter(r => r[indicesColumnas.consolidado["id"] - 1] == id)[0];
+    var arrayFechasMasivas = []
+    var contadorFechasMasivas = $(".fechasMasivas").length
+    for(var i = 1; i < contadorFechasMasivas; i++){
+      arrayFechasMasivas.push($("#fecha-grupo-"+i).val())
+    }
+    $("#formulario")[0].reset();
+    $("#area").val(area);
+
+    for(var i=0;i<contadorFechasMasivas;i++){
+      $("#fecha-grupo-" + (i + 1)).val(arrayFechasMasivas[i])
+    }
+
+    $(".ocultarDetalles").hide()
+    
+    var auxContenidoCargado = false;
+    var auxRecontratacion = false
+    var auxCargoCritico = false
+    var auxMasivo = false
+   
+    for (var nombreCampo in indicesColumnas.consolidado) {
+      var valor = datosRegistro[indicesColumnas.consolidado[nombreCampo] - 1];
+      var fechaOrganizada;
+      
+      if (!valor){
+        // $("#" + nombreCampo).val('');
+        // $("." + nombreCampo).val('');
+        continue
+      }
+      
+      var tipo = $("#" + nombreCampo).prop("type");
+      if(tipo == "date") {
+        $("#" + nombreCampo).val(convertirFechaWeb(valor));
+        $("." + nombreCampo).val(convertirFechaWeb(valor));
+      } else {
+        $("#" + nombreCampo).val(valor);
+        $("." + nombreCampo).val(valor);
+      }
+      
+      if (nombreCampo == "traslado" || nombreCampo == "reintegro") {
+        if(valor.toString().toUpperCase() == "SI") auxContenidoCargado = true;
+      }
+
+      if (nombreCampo == "tipoContrato") {
+        console.log("nombreCampo tipoContrato", nombreCampo);
+        var tipoContrato = valor.toString().trim().toUpperCase();
+        tipoDeContrato = valor
+      }
+
+      if(nombreCampo=="cargoCritico" && valor == "Si"){
+        auxCargoCritico=true
+      }
+
+      if (nombreCampo == "tipoSalario" ) {
+        tipoDeSalario = valor;
+        if (valor == "Integral"){
+          document.getElementById("checkCerFondoCesantias").disabled = true;
+        } else {
+          document.getElementById("checkCerFondoCesantias").disabled = false;
+        }
+      }
+      if(nombreCampo == "reContratacion"){
+        if(valor == "Si"){
+          $("#correoPadrino").hide()
+          auxRecontratacion = true
+        }
+      }
+
+      if (nombreCampo == "fechaInicioLabo"){
+        var dia = valor.substr(0, 2);
+        var mes = valor.substr(3, 2);
+        var ano = valor.substr(6, 4);
+        fechaOrganizada = ano + "-" + mes + "-" + dia ;
+        $("#fechaInicioLabo").val(fechaOrganizada)
+        $("#fechaIngreso").val(fechaOrganizada)
+      }
+      if (nombreCampo == "fechaIngresoGrupo"){
+        var diaGrupo = valor.substr(0, 2);
+        var mesGrupo = valor.substr(3, 2);
+        var anoGrupo = valor.substr(6, 4);
+        var fechaOrganizadaGrupo = anoGrupo + "-" + mesGrupo + "-" + diaGrupo;
+        document.getElementById("fechaIngresoGrupo").value = fechaOrganizadaGrupo;
+      }
+
+      if (nombreCampo == "fechaRecibidoKIT"){
+        var diaKit = valor.substr(0, 2);
+        var mesKit = valor.substr(3, 2);
+        var anoKit = valor.substr(6, 4);
+        var fechaKit = anoKit + "-" + mesKit + "-" + diaKit ;
+        document.getElementById("fechaRecibidoKIT").value = fechaKit;
+        document.getElementById("fechaRecibidoKITAprendizaje").value = fechaKit;       
+      }
+
+      if (nombreCampo == "citaContratacion"){
+        valor = moment(valor).format("YYYY-MM-DDTHH:mm")
+        $("#citaContratacion").val(valor)
+        $("#citaContratacionLider").val(valor)       
+      }
+      if(nombreCampo == "masivos"){
+        if(valor.toString().toUpperCase() == "SI"){
+          auxMasivo = true
+        }
+      }
+    }
+
+    var compañia = datosRegistro[indicesColumnas.consolidado.compania - 1].toString().toUpperCase()
+
+    if(compañia.indexOf("DAVIVIENDA") == -1){
+      if(compañia.indexOf("CORREDORES") > -1){
+        $("." + area + "-CORREDORES").show()
+      }
+      if(compañia.indexOf("BETA") > -1){
+        $("." + area + "-beta").show()
+      }
+      if(compañia.indexOf("GAMMA") > -1){
+        $("." + area + "-gamma").show()
+      }
+    }else{
+      $(".no-filiales").show()
+    }
+    
+
+    
+    if(auxContenidoCargado)$("#contenidoCargado").val("No");
+
+    var citacionRealInduccion = datosRegistro[indicesColumnas.consolidado["citacionRealInduccion"] - 1];
+    if (!citacionRealInduccion) {
+      citacionRealInduccion = datosRegistro[indicesColumnas.consolidado["fechaInicioLabo"] - 1];
+    } else {
+      citacionRealInduccion = datosRegistro[indicesColumnas.consolidado["citacionRealInduccion"] - 1];
+    }
+
+
+
+    var diaNew = citacionRealInduccion.substr(0, 2);
+    var mesNew = citacionRealInduccion.substr(3, 2);
+    var anoNew = citacionRealInduccion.substr(6, 4);
+    var fechaOrganizada = anoNew + "-" + mesNew + "-" + diaNew;
+    $("#citacionRealInduccion").val(fechaOrganizada);
+
+    var itemsCheck = [
+      "checkAfiliacionEPS", "checkConsAfilADRES", "checkCerFondoPensiones", "checkCerFondoCesantias", "checkDocIdentidad150",
+      "checkLibretaMilitar","checkDiplomaActaBachiller", "checkDiplomaBachiller", "checkActaPregrado", "checkDiplomaPregrado",
+      "checkActaPosgrado", "checkDiplomaPosgrado", "checkTarjetaProfesional", "checkCertLaborales", 
+      "checkFoto3x4", "checkCertCuentaDAMAS", "checkCerAprendizaje", "checkRegistroNacimiento", "checkCertFinCasa", "checkTallaUniformes", 
+      "checkHV",
+      "checkRegistroCivilMatrimonio", "checkDocIdentidadConyuge", "checkCertLaboralConyuge", "checkRegistroNacHijos", "checkTarjIdentHijos", 
+      "checkFondoPensiones", "checkFondoCesantias", "checkContratoTrabajo", "checkAfiliacionSaludEPS", "checkAfiliacionCaja", "checkCartaPactoCol", 
+      "checkAfiliacionFondo", "checkCartaPresentacion", "checkAfiliacionARL"
+     ]
+
+    for (var iCheck in itemsCheck ) {
+      var item = itemsCheck[iCheck];
+      if (datosRegistro[indicesColumnas.consolidado[item] - 1]) $("#" + item).prop("checked", true);
+    }
+    
+
+    var urlCarpeta = datosRegistro[indicesColumnas.consolidado["linkCarpDigital"] - 1];
+    if (urlCarpeta != "") $("#btn-carpetaCaso").prop("href",urlCarpeta ).show();
+    else $("#btn-carpetaCaso").hide();
+
+    if (urlCarpeta != "") $("#btn-carpetaCaso2").prop("href",urlCarpeta ).show();
+    else $("#btn-carpetaCaso2").hide();
+
+    $(".div-area").hide();
+    $(".div-calendario").hide();
+    $(".div-desistirProceso").hide();
+
+    switch(area) {
+      case "Contratacion":
+        $(".div-contratacion").show();
+        
+        $(".divEditableDatosBasicos").prop("disabled", false);
+        if(auxMasivo){
+          $("#btn-agendarContratacionMasivo").prop("hidden",false)
+          $("#btn-envioSeccionCuatro").prop("hidden",true)
+        }else{
+          $("#btn-agendarContratacionMasivo").prop("hidden",true)
+          $("#btn-envioSeccionCuatro").prop("hidden",false)
+        }
+        
+        /*if(auxRecontratacion){
+          $("#btn-cargueDocExitoso").hide();
+        }else{
+          $("#btn-cargueDocExitoso").show();
+        }*/
+        break;
+      case "Carnetizacion":
+        $(".div-carnetizacion").show();
+        $("#formulario input:visible, select:visible").prop("disabled", false)
+        $(".divEditableDatosBasicos").prop("disabled", false);
+        break;
+      case "Alistamiento":
+        // if(auxMasivo || datosRegistro[indicesColumnas.consolidado.catCargo - 1].toString().trim().toUpperCase() === "FUERZA COMECIAL"){
+        if(datosRegistro[indicesColumnas.consolidado.catCargo - 1].toString().trim().toUpperCase() === "FUERZA COMECIAL" || datosRegistro[indicesColumnas.consolidado.catCargo - 1].toString().trim().toUpperCase() ==="APRENDIZ SENA"){
+          $(".div-alistamiento").not(".noRecontratatacion").show();
+        }
+        else{
+          $(".div-alistamiento").show();
+        }
+        $("#formulario input:visible, select:visible").prop("disabled", false)
+        $(".divEditableDatosBasicos").prop("disabled", false);
+        break;
+      case "Aprendizaje": 
+        if(!auxCargoCritico){
+          $(".cargo-critico").hide();
+        }else{
+          $(".cargo-critico").show();
+        }
+        $(".div-aprendizaje").not(".cargo-critico").show();
+        $("input:visible, select:visible").prop("disabled", false)
+        $(".divEditableDatosBasicos").prop("disabled", false);
+        break;
+      case "Lider":
+        $(".div-lider").show();
+        $(".divOcultarALider").hide(); 
+        $("#formulario input:visible, select:visible").prop("disabled", false)
+        $(".divEditableDatosBasicos").prop("disabled", false);
+        break;
+    }
+    var tipoSalario = $("#tipoSalario").val();
+
+    $(".divAprDAVPracUni").prop("disabled", false);
+    $(".divIndefSIDAV").prop("disabled", false);
+    $(".divIndefinidoIntegral").prop("disabled", false);
+    $(".divFijo").prop("disabled", false);
+    $(".divIndefinido").prop("disabled", false);
+
+    $(".container-dav").hide();
+    $("#div-tablaModificacion").show();
+
+    $("input:visible, select:visible").prop("disabled", false)
+    // $("input:visible, select:visible").prop("readonly", false)
+    
+    var valorCategoria = $("#catCargo").val().toString().toUpperCase()
+
+    if (tipoContrato == "APRENDIZ SENA" || tipoContrato == "PRACTICANTE UNIVERSITARIO" || valorCategoria === 'APRENDIZ SENA' || valorCategoria ==='PRACTICANTE UNIVERSITARIO') {
+      console.log("OK AS");
+      $(".divAprDAVPracUni").prop("disabled", true);
+
+    } else if ((tipoDeContrato == "TÉRMINO INDEFINIDO" && tipoSalario == "Integral")) {
+      $(".divIndefinidoIntegral").prop("disabled", true);
+
+    } else if (tipoContrato == "TÉRMINO FIJO" || tipoContrato == "PRESTACIÓN DE SERVICIOS" || tipoContrato == "PROFESIONAL EN PRÁCTICA") {
+      $(".divFijo").prop("disabled", true);
+      // $(".divSENA").prop("disabled", true);
+
+    } else if (tipoContrato == "TÉRMINO INDEFINIDO" && tipoSalario != "Integral") {
+      $(".divIndefinido").prop("disabled", true);
+    }
+
+    if (tipoContrato != "APRENDIZ SENA" && tipoContrato != "PRACTICANTE UNIVERSITARIO") {
+      $(".divSENA").prop("disabled", true);
+
+    } else {
+      $(".divSENA").prop("disabled", false);
+    }
+
+    
+
+    if(valorCategoria.indexOf("APRENDIZ")!=-1 || valorCategoria.indexOf("SENA")!=-1 || valorCategoria.indexOf("SEMILLERO")!=-1 || valorCategoria.indexOf("FUERZA COMECIAL")!=-1 || valorCategoria.indexOf("FORMACIÓN")!=-1){
+      $("#equipoPersonalizado").val("No Aplica") 
+      $("#tipoKit").val("No aplica")
+      $("#tipoEquipoEntregado").val("No Aplica ")
+    }
+
+    
+
+
+    // $("#formulario input:visible, select:visible").prop("disabled", false)
+    $("#formulario input:hidden, select:hidden").not(".noDeshabilitar").prop("disabled", true)
+    if(area=== "Carnetizacion"){
+      console.log(area)
+      $(".readonlyCarnetizacion :input, .readonlyCarnetizacion  select:visible").prop("disabled", true)
+    }
+
+    $('input[readonly]').prop('disabled', true); 
+
+    window.scrollTo(0,0);
+  });
+
+  $(".container-dav").on("click", "#btn-gestion", function(){
+    this.mostrar = !this.mostrar
+    var i = $(this).find("i")
+    if(!this.mostrar){
+      $(".gestion-tabla").hide()
+      i.removeClass("bi-caret-up")
+      i.addClass("bi-caret-down")   
+    }else{
+      $(".gestion-tabla").show()
+      i.removeClass("bi-caret-down")
+      i.addClass("bi-caret-up")
+    }
+  })
+
+  $(".container-dav").on("click", ".pendiente-detalles",function() {
+    $("#gestionado").find("option[value='Pendiente']").prop("disabled",false);
+  })
+
+  $(".container-dav").on("click", ".gestionado-detalles",function() {
+    $("#gestionado").find("option[value='Pendiente']").prop("disabled",true);
+  })
+
+  $("#btn-envioNotificacionAfiliaciones").click(function(){
+    $("#loader").show()
+    var formulario = $("#formulario")[0];
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarEnvioCorreo).notificarAfiliaciones(formulario);
+  })
+
+  $(".btn-volver").click(function(){
+    $(".container-dav").hide();
+    $("#div-tablasGestion").show();
+    if(area!="Lider"){
+    $("#texto-lider").prop("hidden",true)
+    }else{
+      $("#texto-lider").prop("hidden",false)
+    }
+    $(".grupo-tabla-masivo").collapse("hide")
+    $("#agenda-masiva").prop("hidden",true)
+    window.scrollTo(0,0);
+  });
+
+  $(".btn-volverHome").click(function(){
+    window.open(urlPaginaHomeGlobal,"_top");
+  });
+  
+  
+  $("#cigo").hover(function() {
+    $(this).stop(true, false).animate({ width: "250px" }, function() {$("#desarrollado").fadeIn(200)});
+    
+  }, function() {
+    $("#desarrollado").fadeOut(200,function() {
+      $("#cigo").stop(true, false).animate({ width: "90px" })
+    });
+    
+  });
+
+  $(".apoyo-sostenimiento").change(()=>{
+    const fecha_fin_practica = $("#fechaFinEtapaPrac").val()
+    const fecha_ini_practica = $("#fechaIniEtapaPrac").val()
+    const fecha_fin_lectiva = $("#fechaFinEtapaLecti").val()
+    const fecha_ini_lectiva = $("#fechaIniEtapaLecti").val()
+    
+    const input_sosteminieto_productivo = $("#apoyoSostenimientoEtapaProductiva")
+    const input_sosteminieto_lectivo = $("#apoyoSostenimientoEtapaLectiva")
+
+    const salario = $("#salario").val()
+          
+    if(fecha_fin_practica && fecha_ini_practica && fecha_fin_lectiva && fecha_fin_lectiva && fecha_ini_lectiva){
+      input_sosteminieto_productivo.val("")
+      input_sosteminieto_lectivo.val(salario)
+    }else if(fecha_ini_practica && fecha_fin_practica){
+      input_sosteminieto_productivo.val(salario)
+      input_sosteminieto_lectivo.val("")
+    }else{
+      input_sosteminieto_productivo.val("")
+      input_sosteminieto_lectivo.val("")
+    }
+  })
+
+  $("[data-principal]").on("click keydown keyup focus change", function(){
+    const idPrincial = $(this).data("principal")
+    const valor = this.value
+    $("#" + idPrincial).val(valor)
+  })
+
+  $("#btn-agendarMasivo").click(function(){
+    if(arrayIdUnico.length === 0){
+      mostrarMensaje("Importante","No hay usuarios en grupos masivos")
+      return
+    }
+
+    $("#loader").show();
+    $("#auxContadorGrupoMasivo").val(auxContadorGrupoMasivo)
+    $("#arrayIdUnico").val(arrayIdUnico.toString())
+
+    var tabla = $("#formulario")[0]
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(guardadoAgendamientoMasivo).agendarMasivos(tabla);    
+  })
+
+  $("#btn-generarPlanos").click(()=>{
+    if(arrayIdUnico.length === 0){
+      mostrarMensaje("Importante","No hay usuarios en grupos masivos")
+      return
+    }
+
+    $("#loader").show();
+    $("#auxContadorGrupoMasivo").val(auxContadorGrupoMasivo)
+    $("#arrayIdUnico").val(arrayIdUnico.toString())
+
+    var tabla = $("#formulario")[0]
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarEnvioCorreo).crearPlanoMasivo(tabla);  
+  })
+
+  $(".container-dav").on("change", ".check-general" , function() {
+
+    const data = $(this).data()
+
+    var seleccion = $(this).is(':checked');
+    $(`.check-${data.check}`).prop("checked", seleccion);
+  });
+  
+  $(".container-dav").on("change", "#check-master" , function() {
+    var seleccion = $(this).is(':checked');
+    $(".check-general").prop("checked", seleccion);
+  });
+
+  $("#btn-generarContratos").click(function(){
+    if(arrayIdUnico.length === 0){
+      mostrarMensaje("Importante","No hay usuarios en grupos masivos")
+      return
+    }
+
+    $("#loader").show();
+    $("#auxContadorGrupoMasivo").val(auxContadorGrupoMasivo)
+    $("#arrayIdUnico").val(arrayIdUnico.toString())
+
+    var tabla = $("#formulario")[0]
+    google.script.run.withFailureHandler(notificarError).withSuccessHandler(notificarEnvioCorreo).generarContratosMasivos(tabla);    
+  })
+  
+  $(".container-dav").on("change", "#check-master" , function() {
+    var seleccion = $(this).is(':checked');
+    $(".check-general").prop("checked", seleccion);
+  });
+
+
+  /*$(".container-dav").on("change", "#documCompletos",function() {
+    console.log("cambió y el valor es:" + document.getElementById("documCompletos").value);
+    var valorDeRespuesta = document.getElementById("documCompletos").value;
+    if (valorDeRespuesta == "SI") {
+      document.getElementById("btn-cargueDocExitoso").disabled = true;
+    } else if (valorDeRespuesta == "NO"){
+      document.getElementById("btn-cargueDocExitoso").disabled = false;
+    }
+  });*/
+
+  const diccionario_documentos_tipo_contrato = {
+    "PROFESIONAL EN PRÁCTICA": "profesional-practica",
+    "PRACTICANTE UNIVERSITARIO": "profesional-practica",
+    "TÉRMINO FIJO": "salarial",
+  }
+
+  $(".container-dav").on("change", "#checkSelTodosObli",function() {
+    const seleccion = $(this).is(':checked');
+    const tipoSalario = $("#tipoSalario").val().trim().toUpperCase()
+    const tipoContrato = $("#tipoContrato").val().trim().toUpperCase()
+
+    if (!seleccion) {
+      $(".check-docs").prop("checked", seleccion)
+      return
+    }
+
+    var checks_marcar = diccionario_documentos_tipo_contrato[tipoContrato]
+
+    if(!checks_marcar){
+      checks_marcar = "salarial"
+    }else if(tipoContrato == "TÉRMINO INDEFINIDO"){
+      checks_marcar = tipoSalario === "INTEGRAL" ? "integral" : "salarial"
+    }
+
+    $(`.${checks_marcar}`).not(`:disabled`).prop("checked", seleccion);
+  });
+
+  $(".container-dav").on("change", "#checkSelTodosBene",function() {
+    var seleccion = $(this).is(':checked');
+    console.log("ooooooo es: " + tipoDeContrato);
+    if (seleccion) {
+      $("#checkRegistroCivilMatrimonio").prop("checked", seleccion);
+      $("#checkDocIdentidadConyuge").prop("checked", seleccion);
+      $("#checkCertLaboralConyuge").prop("checked", seleccion);
+      $("#checkRegistroNacHijos").prop("checked", seleccion);
+      $("#checkTarjIdentHijos").prop("checked", seleccion);
+    } else if (!seleccion) {
+      $("#checkRegistroCivilMatrimonio").prop("checked", seleccion);
+      $("#checkDocIdentidadConyuge").prop("checked", seleccion);
+      $("#checkCertLaboralConyuge").prop("checked", seleccion);
+      $("#checkRegistroNacHijos").prop("checked", seleccion);
+      $("#checkTarjIdentHijos").prop("checked", seleccion);
+    }
+  });
+
+  $(".container-dav").on("change", "#checkSelTodosContra",function() {
+    var seleccion = $(this).is(':checked');
+    var tipoSalario = $("#tipoSalario").val();
+
+    if (seleccion) {
+      if (tipoDeContrato == "Término fijo" || tipoDeContrato == "Prestación de servicios") {
+        $("#checkContratoTrabajo").prop("checked", seleccion);
+        $("#checkAfiliacionSaludEPS").prop("checked", seleccion);
+        $("#checkFondoPensiones").prop("checked", seleccion);
+        $("#checkAfiliacionCaja").prop("checked", seleccion);
+        $("#checkAfiliacionFondo").prop("checked", seleccion);
+      }
+      if (tipoDeContrato == "Aprendiz sena" || tipoDeContrato == "Practicante universitario") {
+        $("#checkAfiliacionSaludEPS").prop("checked", seleccion);
+        $("#checkCartaPresentacion").prop("checked", seleccion);
+        $("#checkAfiliacionFondo").prop("checked", seleccion);
+        $("#checkContratoTrabajo").prop("checked", seleccion);
+      }
+      if (tipoDeContrato == "Término indefinido") {
+        $("#checkCartaPactoCol").prop("checked", seleccion);
+        $("#checkContratoTrabajo").prop("checked", seleccion);
+        $("#checkAfiliacionSaludEPS").prop("checked", seleccion);
+        $("#checkAfiliacionCaja").prop("checked", seleccion);
+        $("#checkAfiliacionFondo").prop("checked", seleccion);
+        if (tipoDeSalario != "Integral"){
+          $("#checkFondoPensiones").prop("checked", seleccion);
+        }
+      }
+      if ((tipoDeContrato == "Término indefinido" && tipoSalario == "Integral")) {
+        $("#checkCartaPactoCol").prop("checked", seleccion);
+        $("#checkContratoTrabajo").prop("checked", seleccion);
+        $("#checkAfiliacionSaludEPS").prop("checked", seleccion);
+        $("#checkAfiliacionCaja").prop("checked", seleccion);
+        $("#checkAfiliacionFondo").prop("checked", seleccion);
+      }
+      if (tipoDeContrato == "Profesional en práctica") {
+        $("#checkFondoPensiones").prop("checked", seleccion);
+        $("#checkContratoTrabajo").prop("checked", seleccion);
+        $("#checkAfiliacionSaludEPS").prop("checked", seleccion);
+        $("#checkAfiliacionCaja").prop("checked", seleccion);
+        $("#checkAfiliacionFondo").prop("checked", seleccion);
+      }
+    } else if (!seleccion) {
+      if (tipoDeContrato == "Término fijo" || tipoDeContrato == "Prestación de servicios") {
+        $("#checkContratoTrabajo").prop("checked", seleccion);
+        $("#checkAfiliacionSaludEPS").prop("checked", seleccion);
+        $("#checkFondoPensiones").prop("checked", seleccion);
+        $("#checkAfiliacionCaja").prop("checked", seleccion);
+        $("#checkAfiliacionFondo").prop("checked", seleccion);
+      }
+      if (tipoDeContrato == "Aprendiz sena" || tipoDeContrato == "Practicante universitario") {
+        $("#checkAfiliacionSaludEPS").prop("checked", seleccion);
+        $("#checkCartaPresentacion").prop("checked", seleccion);
+        $("#checkAfiliacionFondo").prop("checked", seleccion);
+        $("#checkContratoTrabajo").prop("checked", seleccion);
+      }
+      if (tipoDeContrato == "Término indefinido") {
+        $("#checkCartaPactoCol").prop("checked", seleccion);
+        $("#checkContratoTrabajo").prop("checked", seleccion);
+        $("#checkAfiliacionSaludEPS").prop("checked", seleccion);
+        $("#checkAfiliacionCaja").prop("checked", seleccion);
+        $("#checkAfiliacionFondo").prop("checked", seleccion);
+        if (tipoDeSalario != "Integral"){
+          $("#checkFondoPensiones").prop("checked", seleccion);
+        }
+      }
+      if ((tipoDeContrato == "Término indefinido" && tipoSalario == "Integral")) {
+        $("#checkCartaPactoCol").prop("checked", seleccion);
+        $("#checkContratoTrabajo").prop("checked", seleccion);
+        $("#checkAfiliacionSaludEPS").prop("checked", seleccion);
+        $("#checkAfiliacionCaja").prop("checked", seleccion);
+        $("#checkAfiliacionFondo").prop("checked", seleccion);
+      }
+      if (tipoDeContrato == "Profesional en práctica") {
+        $("#checkFondoPensiones").prop("checked", seleccion);
+        $("#checkContratoTrabajo").prop("checked", seleccion);
+        $("#checkAfiliacionSaludEPS").prop("checked", seleccion);
+        $("#checkAfiliacionCaja").prop("checked", seleccion);
+        $("#checkAfiliacionFondo").prop("checked", seleccion);
+      }
+    }
+  });
+  
+});
+

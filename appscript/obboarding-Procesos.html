@@ -1,0 +1,3363 @@
+<!-- © Banco Davivienda S.A. 2021. Se prohíbe su uso o reproducción sin previa autorización del Banco Davivienda S.A -->
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"> -->
+    <?!= include('CSS'); ?>
+    
+  </head>
+  <body>
+    
+    <div class="container-flex">
+
+      <div class="color-dav-grad">
+        <div id="header-dav">
+          
+            <div id="div-logo-dav" class="text-center">
+              <?!= include('logo-dav'); ?>
+              <h1 id="titulo" style="color:white;">Web App Base</h1>
+            </div>
+            
+            <!--
+            <div>
+              <?!= include('logo-dav'); ?>
+              <h2 id="titulo" style="color:white;">Web App Base</h2>
+            </div>-->
+          
+        </div>
+      
+        <div> <!--Waves Container-->
+            <svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+                <defs>
+                    <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+                </defs>
+                <g class="parallax">
+                    <use xlink:href="#gentle-wave" x="48" y="0" fill="rgba(255,255,255,0.7" />
+                    <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(255,255,255,0.5)" />
+                    <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(255,255,255,0.3)" />
+                    <use xlink:href="#gentle-wave" x="48" y="7" fill="#fdfdfd" />
+                </g>
+            </svg>
+        </div> <!--Waves end-->
+      </div>
+      
+      
+      
+      <div class="container-dav">
+        <form id="formulario" onsubmit="enviarFormulario(this)" autocomplete="off">
+          <div class="card-panel color-dav-grad shadow-dav">
+            <h4 style="margin: 0px; color:white;">Datos Cliente</h4>
+          </div>
+          
+        
+          <div class="form-row">
+            <div class="form-group col-sm">
+              
+              <label for="tipoID">Tipo ID</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <i class="input-group-text material-icons">assignment_ind</i>
+                </div>
+                <select id="tipoID" name="tipoID" class="form-control custom-select" required>
+                  <option value="" selected disabled hidden>Selecciona</option>
+                </select>
+              </div>
+              
+            </div>
+            
+            <div class="form-group col-sm">
+              <label for="identificacion">Identificacion</label>
+              
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <i class="input-group-text material-icons">card_membership</i>
+                </div>
+                <input id="identificacion" name="identificacion" type="number" class="form-control" required >
+              </div>
+              
+            </div>
+            
+            <div class="form-group col-sm">
+              <label for="nombreCliente">Nombre</label>
+              
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <i class="input-group-text material-icons">person</i>
+                </div>
+                <input id="nombreCliente" name="nombreCliente" type="text" class="form-control" required>
+              </div>
+              
+              
+            </div>
+            
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label for="producto">Producto</label>
+              <select id="producto" name="producto" class="form-control custom-select" required>
+                <option value="" selected disabled hidden>Selecciona</option>
+              </select>
+            </div>
+            
+            <div class="form-group col-sm">
+              <label for="comentarios">Comentarios</label>
+              <textarea id="comentarios" name="comentarios" class="form-control" required ></textarea>
+            </div>
+            
+            <div class="form-group col-sm">
+              <label for="archivo">Archivo</label>
+              <div class="input-group">
+                <div class="custom-file">
+                  <input type="file" class="custom-file-input" id="archivo" name="archivo">
+                  <label class="custom-file-label" for="archivo">Seleccionar Arhivo</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group col-sm">
+              <label for="archivo2">Archivo</label>
+              <div class="input-group">
+                <div class="custom-file">
+                  <input type="file" class="custom-file-input" id="archivo2" name="archivo2">
+                  <label class="custom-file-label" for="archivo2">Seleccionar Arhivo</label>
+                </div>
+              </div>
+            </div>
+            
+          </div>
+          
+          <div class="text-center">
+            <button type="submit" class="btn btn-primary btn-lg">Enviar</button>
+          </div>
+          
+        </form>
+      
+        
+        <div class="my-2">
+          <button type="button" class="btn btn-primary" onclick="consultarRegistros()">Consultar Registros</button>
+        </div>
+        
+        <div id="tabla" class="mt-3" style="overflow-x: auto;">
+          
+        
+          <table class="table table-hover mx-auto ">
+            <thead>
+              <tr>
+                <th>Selección<br/>
+                  <div class="custom-control custom-checkbox text-center">
+                    <input type="checkbox" class="custom-control-input" id="check-master">
+                    <label class="custom-control-label" for="check-master"></label>
+                  </div>
+                </th>
+                <th>Tipo ID</th>
+                <th>Identificacion</th>
+                <th>Nombre</th>
+                <th>Producto</th>
+                <th>Comentarios</th>
+                <th>Correo Usuario</th>
+                <th>Estado</th>
+                <th>Observacion</th>
+              </tr>
+            </thead>
+          
+            <tbody id ="registrosTabla">
+            </tbody>
+          </table>
+          
+          <div class="my-2">
+            <button id="btn-guardar-cambios" type="button" class="btn btn-primary">Guardar Cambios</button>
+          </div>
+          
+        </div>
+        
+      </div>
+
+    </div>
+
+    <?!= include('Footer'); ?>
+
+    <!-- Templates -->
+    
+    <div id="templateCheck" hidden>
+      <div class="custom-control custom-checkbox text-center">
+        <input type="checkbox" class="custom-control-input check-general" id="check-#">
+        <label class="custom-control-label" for="check-#"></label>
+      </div>
+    </div>
+    
+    <div id="templateTextArea" hidden>
+      <textarea id="observaciones-#" name="observaciones-#" class="form-control" ></textarea>
+    </div>
+    
+    <div id="templateSelect" hidden>
+       <select id="respuesta-#" name="respuesta-#" class="form-control custom-select respuesta">
+         <option value="" selected disabled hidden>Selecciona</option>
+       </select>
+    </div>
+    
+    <!-- Modal -->
+    <div class="modal fade" id="modal-mensaje" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+          
+          <div class="modal-header">
+            <h3 class="modal-title texto-color-dav" id="tituloModal"></h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          
+          <div id="mensajeModal" class="modal-body"></div>
+          
+          
+          <div class="modal-footer" style="border-top: none;">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <!-- /Modal -->
+    
+    <!-- Loader -->
+    <div id="loader" style="display:none">
+      <div class="text-center" style="margin: 15% auto;">
+        <div class="spinner-grow text-dark" role="status" style="width: 12rem; height: 12rem;">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    </div>
+    <!-- /Loader -->
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <?!= include('JS'); ?>
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script> -->
+    
+  </body>
+</html><!-- © Banco Davivienda S.A. 2021-2022. Se prohíbe su uso o reproducción sin previa autorización del Banco Davivienda S.A -->
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+    integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+
+
+  <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"> -->
+  <?!= include('CSS'); ?>
+
+</head>
+
+<body>
+  <div class="container-flex">
+    <div>
+      <div id="header-dav">
+        <div class="text-center headerGenerico headerContratacion" style="display:none">
+
+          <!-- <img class="header-tamaño" src="https://drive.google.com/a/davivienda.com/uc?id=1TzIRnqsOy_qJKVWvQJ2PIC18rkY9PWu1"></img> -->
+          <img class="header-tamaño" src="https://drive.google.com/thumbnail?sz=w5000&id=1TzIRnqsOy_qJKVWvQJ2PIC18rkY9PWu1"></img>
+        </div>
+        <div class="text-center headerGenerico headerCarnetizacion" style="display:none">
+          <!-- <img class="header-tamaño" src="https://drive.google.com/a/davivienda.com/uc?id=1AvboisPjwG5sYDblVxT1EW7e9dc-GbBi"></img> -->
+          <img class="header-tamaño" src="https://drive.google.com/thumbnail?sz=w5000&id=1AvboisPjwG5sYDblVxT1EW7e9dc-GbBi"></img>
+        </div>
+        <div class="text-center headerGenerico headerAlistamiento" style="display:none">
+          <!-- <img class="header-tamaño" src="https://drive.google.com/a/davivienda.com/uc?id=1UT4D2st7ZAuaIbpSPcPXVnlp-Jip_6KW"></img> -->
+          <img class="header-tamaño" src="https://drive.google.com/thumbnail?sz=w5000&id=1UT4D2st7ZAuaIbpSPcPXVnlp-Jip_6KW"></img>
+        </div>
+        <div class="text-center headerGenerico headerAprendizaje" style="display:none">
+          <!-- <img class="header-tamaño" src="https://drive.google.com/a/davivienda.com/uc?id=1uKue7CmW9MQG4lo0jm6sT9HxkaO0BkB_"></img> -->
+          <img class="header-tamaño" src="https://drive.google.com/thumbnail?sz=w5000&id=1uKue7CmW9MQG4lo0jm6sT9HxkaO0BkB_"></img>
+        </div>
+        <div class="text-center headerGenerico headerLider" style="display:none">
+          <!-- <img class="header-tamaño" src="https://drive.google.com/a/davivienda.com/uc?id=17cs9HPkSMfjc6VAcw7RsKnV2w1MIvYXR"></img> -->
+          <img class="header-tamaño" src="https://drive.google.com/thumbnail?sz=w5000&id=17cs9HPkSMfjc6VAcw7RsKnV2w1MIvYXR"></img>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="container-dav" id="div-tablasGestion">
+      <div class="my-2">
+        <button  type="button" class="btn btn-primary btn-volverHome">
+            <span style="display: flex;flex-direction: row;">
+              <i class="material-icons" style="padding-right:8px;">arrow_back</i>
+              Volver al Home
+            </span>
+          </button>
+      </div>
+
+      <div id="texto-lider" class="texto-lider" hidden>
+        <div>
+          <h3 class="text-center"><b>¡Hola líder! Conoce aquí tu experiencia dentro del Onboarding</b>
+            <h3>
+        </div>
+        <div>
+          <p class="text-center">
+            <b>En esta herramienta puedes hacer seguimiento del avance de tus procesos solicitados</b>
+          </p>
+        </div>
+        <div>
+          <p class="text-center"> <b>Nota:</b> Si quieres tener más detalle del proceso de selección, ingresa <a
+              href="https://grupobolivar.taleo.net/" target="_blank">aquí</a> </p>
+        </div>
+      </div>
+
+      <form id="formularioGestion" onsubmit="enviarFormularioDetalles(this)" autocomplete="off">
+        <div class="card-panel color-dav-grad-sinGestion shadow-dav pantallaNoLider">
+          <h4 style="margin: 0px; color:white;">Gestionar</h4>
+        </div>
+
+        <div class="mt-3 pantallaNoLider" style="overflow-x: auto;">
+
+          <table id="tablaGestion" class="tabla-filtro table table-hover mx-auto ">
+            <thead>
+              <tr id="encabezadosSinGestion" class="encabezados">
+              </tr>
+            </thead>
+
+            <tbody id="registrosSinGestion">
+            </tbody>
+            <tfoot>
+              <tr class="footer">
+              </tr>
+            </tfoot>
+          </table>
+
+        </div>
+
+        <div class="card-panel color-dav-grad-sinGestion shadow-dav pantallaNoLider">
+          <h4 style="margin: 0px; color:white;">Pendiente</h4>
+        </div>
+
+        <div class="mt-3 pantallaNoLider" style="overflow-x: auto;">
+
+          <table id="tablaAlistamiento" class="tabla-filtro table table-hover mx-auto ">
+            <thead>
+              <tr id="encabezadosPendientes" class="encabezados">
+              </tr>
+            </thead>
+
+            <tbody id="registrosPendientes">
+            </tbody>
+            <!-- <tfoot>
+              <tr class="footer pendientes-estilo">
+              </tr>
+            </tfoot> -->
+          </table>
+
+        </div>
+
+        <div class="card-panel color-dav-grad-sinGestion shadow-dav pantallaNoLider">
+          <button id="btn-gestion" type="button" class="color-dav-grad-sinGestion btn-sin-borde">
+              <h4 style="margin: 0px; color:white;">Gestionado 
+                <i class="bi bi-caret-down"></i>
+              </h4>
+            </button>
+
+        </div>
+
+        <div class="mt-3 pantallaNoLider gestion-tabla" style="overflow-x: auto;" style="display:none">
+
+          <table id="tablaAprendizaje" class="tabla-filtro table table-hover mx-auto" style="width: 100%;">
+            <thead>
+              <tr id="encabezadosGestionados" class="encabezados">
+              </tr>
+            </thead>
+
+            <tbody id="registrosGestionados">
+            </tbody>
+            <!-- <tfoot>
+              <tr class="footer" id="hola">
+              </tr>
+            </tfoot> -->
+          </table>
+
+        </div>
+
+        <div class="card-panel color-dav-grad-sinGestion shadow-dav pantallaLider">
+          <h4 style="margin: 0px; color:white;">Requisición</h4>
+        </div>
+
+        <div class="mt-3 pantallaLider" style="overflow-x: auto;">
+
+          <table id="tablaRequisicionLider" class="table table-hover mx-auto " style="width: 100%;">
+            <thead>
+              <tr id="encabezadosRequisicionLider" class="RequisicionLider" hidden>
+                <th style='min-width:150px'>ID Requisición</th>
+                <th style='min-width:150px'>Cargo</th>
+                <th style='min-width:150px'>Estado</th>
+              </tr>
+            </thead>
+
+            <tbody id="registrosRequisicionLider">
+            </tbody>
+            <!-- <tfoot>
+              <tr class="footer">
+              </tr>
+            </tfoot> -->
+          </table>
+
+        </div>
+
+
+
+        <div class="card-panel color-dav-grad-sinGestion shadow-dav pantallaLider" hidden>
+          <h4 style="margin: 0px; color:white;">Seleccion</h4>
+        </div>
+
+        <div class="mt-3 pantallaLider" style="overflow-x: auto;" hidden>
+
+          <table id="tablaSeleccionLider" class="table table-hover mx-auto" style="width: 100%;">
+            <thead>
+              <tr id="encabezadosSeleccionLider" class="encabezadosLiderSeleccion">
+              </tr>
+            </thead>
+
+            <tbody id="registrosSeleccionLider">
+            </tbody>
+          </table>
+
+        </div>
+
+        <div class="card-panel color-dav-grad-sinGestion shadow-dav pantallaLider" hidden>
+          <h4 style="margin: 0px; color:white;">Contratacion</h4>
+        </div>
+
+        <div class="mt-3 pantallaLider" style="overflow-x: auto;" hidden>
+
+          <table id="tablaContratacionLider" class="table table-hover mx-auto ">
+            <thead>
+              <tr id="encabezadosContratacionLider" class="encabezadosLider">
+              </tr>
+            </thead>
+
+            <tbody id="registrosContratacionLider">
+            </tbody>
+          </table>
+
+        </div>
+
+        <div class="card-panel color-dav-grad-sinGestion shadow-dav pantallaLider" hidden>
+          <h4 style="margin: 0px; color:white;">Alistamiento</h4>
+        </div>
+
+        <div class="mt-3 pantallaLider" style="overflow-x: auto;" hidden>
+
+          <table id="tablaAlistamientoLider" class="table table-hover mx-auto ">
+            <thead>
+              <tr id="encabezadosAlistamientoLider" class="encabezadosLider">
+              </tr>
+            </thead>
+
+            <tbody id="registrosAlistamientoLider">
+            </tbody>
+          </table>
+
+        </div>
+
+        <div class="card-panel color-dav-grad-sinGestion shadow-dav pantallaLider" hidden>
+          <h4 style="margin: 0px; color:white;">Induccion</h4>
+        </div>
+
+        <div class="mt-3 pantallaLider" style="overflow-x: auto;" hidden>
+
+          <table id="tablaInduccionLider" class="table table-hover mx-auto ">
+            <thead>
+              <tr id="encabezadosInduccionLider" class="encabezadosLider">
+              </tr>
+            </thead>
+
+            <tbody id="registrosInduccionLider">
+            </tbody>
+          </table>
+
+        </div>
+
+        <div class="form-group col-sm">
+          <div class="col-sm">
+
+          </div>
+        </div>
+
+        <div class="form-group col-sm-3 divAlistamiento">
+          <div class="col-sm">
+            <a id="btn-proyecIngresos"
+              href="https://docs.google.com/spreadsheets/d/1KNFQFovRbjfHVQ6_tQsst6UH2fc3iK-cD30mnD2SvOY" target="_blank"
+              class="btn btn-primary">Proyecciones de Ingresos</a>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="container-dav" id="div-tablaModificacion" style="display:none">
+
+      <div class="my-2">
+        <button  type="button" class="btn btn-primary btn-volver">
+            <span style="display: flex;flex-direction: row;">
+              <i class="material-icons" style="padding-right:8px;">arrow_back</i>
+              Volver
+            </span>
+          </button>
+      </div>
+
+      <div class="card-panel color-dav-grad-detalle-Contratacion shadow-dav">
+        <h4 style="margin: 0px; color:white;">Datos Básicos</h4>
+      </div>
+
+      <form id="formulario" onsubmit="enviarFormularioGestion(this)" autocomplete="off">
+
+        <input id="area" name="area" type="text" class="form-control noDeshabilitar" hidden >
+        <input id="id" name="id" type="text" class="form-control noDeshabilitar" hidden >
+
+        <div class="form-row readonlyCarnetizacion">
+          <div class="form-group col-sm">
+            <label for="primerNombre">Primer Nombre</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">person</i>
+              </div>
+              <input id="primerNombre" name="primerNombre" type="text" class="form-control divEditableDatosBasicos">
+            </div>
+          </div>
+
+          <div class="form-group col-sm noObligatorio">
+            <label for="segundoNombre">Segundo Nombre</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">person</i>
+              </div>
+              <input id="segundoNombre" name="segundoNombre" type="text" class="form-control divEditableDatosBasicos">
+            </div>
+          </div>
+
+          <div class="form-group col-sm">
+            <label for="primerApellido">Primer Apellido</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">person</i>
+              </div>
+              <input id="primerApellido" name="primerApellido" type="text" class="form-control divEditableDatosBasicos">
+            </div>
+          </div>
+
+          <div class="form-group col-sm noObligatorio">
+            <label for="segundoApellido">Segundo Apellido</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">person</i>
+              </div>
+              <input id="segundoApellido" name="segundoApellido" type="text" class="form-control divEditableDatosBasicos">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row readonlyCarnetizacion">
+          <div class="form-group col-sm">
+            <label for="tipoDocumento">Tipo Documento</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">credit_card</i>
+              </div>
+              <input id="tipoDocumento" name="tipoDocumento" type="text" class="form-control divEditableDatosBasicos">
+            </div>
+          </div>
+
+          <div class="form-group col-sm">
+            <label for="numCedula">Numero Documento</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">credit_card</i>
+              </div>
+              <input id="numCedula" name="numCedula" type="text" class="form-control divEditableDatosBasicos">
+            </div>
+          </div>
+
+          <div class="form-group col-sm">
+            <label for="compania">Empresa</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">business</i>
+              </div>
+              <input id="compania" name="compania" type="text" class="form-control divEditableDatosBasicos">
+            </div>
+          </div>
+
+          <div class="form-group col-sm divContratacion divAlistamiento divCarnetizacion">
+            <label for="telCelular">Número Celular</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">settings_cell</i>
+              </div>
+              <input id="telCelular" name="telCelular" type="text" class="form-control divEditableDatosBasicos">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row divContratacion divAlistamiento divCarnetizacion readonlyCarnetizacion">
+          <div class="form-group col-sm">
+            <label for="correo">Correo Personal</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">email</i>
+              </div>
+              <input id="correo" name="correo" type="text" class="form-control divEditableDatosBasicos">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 divContratacion divAlistamiento">
+            <label for="fechaNacimiento">Fecha Nacimiento</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">perm_contact_calendar</i>
+              </div>
+              <input id="fechaNacimiento" name="fechaNacimiento" type="text" class="form-control divEditableDatosBasicos">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 divContratacion divAlistamiento">
+            <label for="fechaExpCedula">Fecha Exp Cédula</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">perm_contact_calendar</i>
+              </div>
+              <input id="fechaExpCedula" name="fechaExpCedula" type="text" class="form-control divEditableDatosBasicos">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 divContratacion">
+            <label for="ciudadExpedicion">Ciudad Exp Cédula</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">perm_contact_calendar</i>
+              </div>
+              <input id="ciudadExpedicion" name="ciudadExpedicion" type="text" class="form-control divEditableDatosBasicos">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row readonlyCarnetizacion">
+          <div class="form-group col-sm-3 divContratacion">
+            <label for="ciudadNacimiento">Ciudad Nacimiento</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">perm_contact_calendar</i>
+              </div>
+              <input id="ciudadNacimiento" name="ciudadNacimiento" type="text" class="form-control divEditableDatosBasicos">
+            </div>
+          </div>
+        </div>
+
+        <div class="div-area div-lider">
+          <div class="card-panel color-dav-grad shadow-dav">
+            <h4 style="margin: 0px; color:white;">Datos Relevantes</h4>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label for="correoElectronicoLider">Correo Electronico</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <i class="input-group-text material-icons">question_answer</i>
+                </div>
+                <input id="correoElectronicoLider" name="correoElectronicoLider" type="text" class="form-control correoLider" readonly>
+              </div>
+            </div>
+
+            <div class="form-group col-sm">
+              <label for="usuarioRedAprendizaje">Usuario de RED</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <i class="input-group-text material-icons">question_answer</i>
+                </div>
+                <input id="usuarioRedAprendizaje" name="usuarioRedAprendizaje" type="text" class="form-control usuarioRed" readonly>
+              </div>
+            </div>
+
+            <div class="form-group col-sm">
+              <label for="kitRecibidoAprendizaje">¿KIT recibido?</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <i class="input-group-text material-icons">local_hospital</i>
+                </div>
+                <input id="kitRecibidoAprendizaje" name="kitRecibidoAprendizaje" type="text" class="form-control kitRecibido" readonly>
+              </div>
+            </div>
+
+            <div class="form-group col-sm">
+              <label for="fechaRecibidoKITAprendizaje">Fecha Recibido</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <i class="input-group-text material-icons">local_hospital</i>
+                </div>
+                <input id="fechaRecibidoKITAprendizaje" name="fechaRecibidoKITAprendizaje" type="text" class="form-control fechaRecibidoKIT" readonly>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label for="fechaIngreso1">Fecha de Ingreso</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <i class="input-group-text material-icons">local_hospital</i>
+                </div>
+                <input id="fechaIngreso1" name="fechaIngreso" type="date" class="form-control fechaIngreso" readonly disabled>
+              </div>
+            </div>
+
+            <div class="form-group col-sm">
+              <label for="fechaInduccionApre">Fecha Citación Inducción</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <i class="input-group-text material-icons">local_hospital</i>
+                </div>
+                <input id="fechaInduccionApre" name="fechaInduccionApre" type="date" class="form-control fechaInduccionApre" readonly disabled>
+              </div>
+            </div>
+
+            <div class="form-group col-sm">
+              <label for="accesosCorreoEmail">¿Accesos y Correo OK?</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <i class="input-group-text material-icons">payment</i>
+                </div>
+                <select id="accesosCorreoEmail" name="accesosCorreoEmail" class="form-control custom-select accesosCorreoEmail" readonly disabled="readonly disabled">
+                    <option value="" selected readonly hidden>Selecciona</option>
+                  </select>
+              </div>
+            </div>
+
+            <div class="form-group col-sm">
+              <label for="citaContratacionLider">Citación Contratación</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <i class="input-group-text material-icons">date_range</i>
+                </div>
+                <input id="citaContratacionLider" name="citaContratacionLider" type="date" class="form-control" readonly>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-panel color-dav-grad-detalle-Contratacion shadow-dav">
+          <h4 style="margin: 0px; color:white;">Datos Adicionales</h4>
+        </div>
+
+        <div class="form-row">
+          <div
+            class="form-group col-sm-3 divContratacion divAlistamiento divAprendizaje divCarnetizacion readonlyCarnetizacion divLider">
+            <label for="tipoContrato">Tipo de Contrato</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">business_center</i>
+              </div>
+              <input id="tipoContrato" name="tipoContrato" type="text" class="form-control" readonly>
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 divContratacion divLider">
+            <label for="tipoSalario">Tipo de Salario</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">business_center</i>
+              </div>
+              <input id="tipoSalario" name="tipoSalario" type="text" class="form-control" readonly>
+            </div>
+          </div>
+
+          <div
+            class="form-group col-sm-3 divContratacion divAlistamiento divAprendizaje divCarnetizacion readonlyCarnetizacion divLider">
+            <label for="codigoSucursal">Sucursal</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">business_center</i>
+              </div>
+              <input id="codigoSucursal" name="codigoSucursal" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div
+            class="form-group col-sm-3 divContratacion divAlistamiento divAprendizaje divCarnetizacion readonlyCarnetizacion divLider">
+            <label for="nombreCargo">Cargo</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">perm_identity</i>
+              </div>
+              <input id="nombreCargo" name="nombreCargo" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div
+            class="form-group col-sm-3 divContratacion divAlistamiento divAprendizaje divCarnetizacion readonlyCarnetizacion divLider">
+            <label for="posicionContratacion">No Posición</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">assignment</i>
+              </div>
+              <input id="posicionContratacion" name="posicionContratacion" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div
+            class="form-group col-sm-3 divContratacion divAlistamiento divCarnetizacion readonlyCarnetizacion divLider">
+            <label for="departamentoContratacion">Centro de Costos</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">account_balance</i>
+              </div>
+              <input id="departamentoContratacion" name="departamentoContratacion" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 divContratacion" hidden>
+            <label for="rangoSalarial">Rango Salarial</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">monetization_on</i>
+              </div>
+              <input id="rangoSalarial" name="rangoSalarial" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div
+            class="form-group col-sm-3 divContratacion divAlistamiento divCarnetizacion readonlyCarnetizacion divLider">
+            <label for="codigoDependencia">Código de dependencia</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">code</i>
+              </div>
+              <input id="codigoDependencia" name="codigoDependencia" type="text" class="form-control codDepartamento">
+            </div>
+          </div>
+
+          <div
+            class="form-group col-sm-3 divContratacion divAlistamiento divAprendizaje divCarnetizacion readonlyCarnetizacion divLider">
+            <label for="nombreDependecia">Nombre de Dependencia</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">location_city</i>
+              </div>
+              <input id="nombreDependecia" name="nombreDependecia" type="text" class="form-control ubicEstructura">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 divContratacion">
+            <label for="salario">Sueldo</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">monetization_on</i>
+              </div>
+              <input id="salario" name="salario" type="number" class="form-control divEditableDatosBasicos apoyo-sostenimiento">
+            </div>
+          </div>
+
+          <div
+            class="form-group col-sm-3 divContratacion divAlistamiento divAprendizaje divCarnetizacion readonlyCarnetizacion divLider">
+            <label for="fechaInicioLabo">Fecha de Ingreso</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">date_range</i>
+              </div>
+              <input id="fechaInicioLabo" name="fechaInicioLabo" type="date" class="form-control duracion_contrato divEditableDatosBasicos">
+            </div>
+          </div>
+
+          <!-- <div class="form-group col-sm-3 divContratacion divAlistamiento divAprendizaje divCarnetizacion readonlyCarnetizacion divLider">
+              <label for="fechaIngresoReintegro">Fecha Ingreso Reintegro</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <i class="input-group-text material-icons">business</i>
+                </div>
+                <input id="fechaIngresoReintegro" name="fechaIngresoReintegro" type="text" class="form-control" readonly>
+              </div>
+            </div> -->
+          <!-- <div class="form-group col-sm-3 divContratacion divAlistamiento divAprendizaje divCarnetizacion readonlyCarnetizacion divLider">
+              <label for="traslado">Traslado Filial</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <i class="input-group-text material-icons">business</i>
+                </div>
+                <input id="traslado" name="traslado" type="text" class="form-control" readonly>
+              </div>
+            </div> -->
+
+          <!-- <div class="form-group col-sm-3 divContratacion divAlistamiento divAprendizaje divCarnetizacion readonlyCarnetizacion divLider">
+              <label for="fechaIngresoTraslado">Fecha Ingreso Traslado</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <i class="input-group-text material-icons">business</i>
+                </div>
+                <input id="fechaIngresoTraslado" name="fechaIngresoTraslado" type="text" class="form-control" readonly>
+              </div>
+            </div> -->
+
+          <div
+            class="form-group col-sm-3 divContratacion divAlistamiento divAprendizaje divCarnetizacion readonlyCarnetizacion"
+            hidden>
+            <label for="fechaAntiguendadEnElGrupo">Fecha Antiguedad en el Grupo</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">date_range</i>
+              </div>
+              <input id="fechaAntiguendadEnElGrupo" name="fechaAntiguendadEnElGrupo" type="text" class="form-control nolimitefecha">
+            </div>
+          </div>
+
+          <div
+            class="form-group col-sm-3 divContratacion divAlistamiento divAprendizaje divCarnetizacion readonlyCarnetizacion divLider noObligatorio">
+            <label for="fechaIngresoGrupo">Fecha de Ingreso al Grupo</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">date_range</i>
+              </div>
+              <input id="fechaIngresoGrupo" name="fechaIngresoGrupo" type="date" class="form-control divEditableDatosBasicos nolimitefecha">
+            </div>
+          </div>
+
+          <div
+            class="form-group col-sm-3 divContratacion divAlistamiento divCarnetizacion readonlyCarnetizacion divLider">
+            <label for="reintegro">Reintegro</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">short_text</i>
+              </div>
+              <input id="reintegro" name="reintegro" type="text" class="form-control" readonly>
+            </div>
+          </div>
+
+          <div
+            class="form-group col-sm-3 divContratacion divAlistamiento divCarnetizacion readonlyCarnetizacion divLider">
+            <label for="ubicacion">Ubicación Física Funcionario</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">place</i>
+              </div>
+              <input id="ubicacion" name="ubicacion" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div
+            class="form-group col-sm-3 divContratacion divAlistamiento divAprendizaje divCarnetizacion readonlyCarnetizacion divLider">
+            <label for="vicepresidencias">Vicepresidencia</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">location_city</i>
+              </div>
+              <input id="vicepresidencias" name="vicepresidencias" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div
+            class="form-group col-sm-3 divContratacion divAlistamiento divCarnetizacion readonlyCarnetizacion divLider">
+            <label for="nombreLiderPosicion">Jefe Inmediato de Vacante</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">person</i>
+              </div>
+              <input id="nombreLiderPosicion" name="nombreLiderPosicion" type="text" class="form-control">
+            </div>
+          </div>
+
+          <!-- <div class="form-group col-sm-3 divContratacion">
+              <label for="cargoDefectoJefe">Cargo Jefe Solicitante</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <i class="input-group-text material-icons">person</i>
+                </div>
+                <input id="cargoDefectoJefe" name="cargoDefectoJefe" type="text" class="form-control">
+              </div>
+            </div> -->
+
+          <div
+            class="form-group col-sm-3 divContratacion divAlistamiento divCarnetizacion readonlyCarnetizacion divLider">
+            <label for="extensionJefe">Ext. Jefe Inmediato</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">local_phone</i>
+              </div>
+              <input id="extensionJefe" name="extensionJefe" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 divContratacion">
+            <label for="consultor">Consultor</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">person</i>
+              </div>
+              <input id="consultor" name="consultor" type="text" class="form-control" readonly disabled>
+            </div>
+          </div>
+
+          <!-- <div class="form-group col-sm-3 divContratacion divAlistamiento divAprendizaje divCarnetizacion readonlyCarnetizacion" >
+              <label for="permCargo">Permisos del Cargo</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <i class="input-group-text material-icons">business</i>
+                </div>
+                <input id="permCargo" name="permCargo" type="text" class="form-control" readonly>
+              </div>
+            </div> -->
+
+          <div class="form-group col-sm-3 divContratacion divAlistamiento divCarnetizacion readonlyCarnetizacion">
+            <label for="dirEntrega">Dirección Residencia / Entrega</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">directions_transit</i>
+              </div>
+              <input id="dirEntrega" name="dirEntrega" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div
+            class="form-group col-sm-3 divContratacion divAlistamiento divAprendizaje divCarnetizacion readonlyCarnetizacion">
+            <label for="catCargo">Categoria del Cargo</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">perm_identity</i>
+              </div>
+              <input id="catCargo" name="catCargo" type="text" class="form-control" readonly>
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 divContratacion" hidden>
+            <label for="cargoSaghi">Cargo SAGHI</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">person</i>
+              </div>
+              <input id="cargoSaghi" name="cargoSaghi" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 divContratacion" hidden>
+            <label for="reqUniforme">Requiere Uniforme</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">accessibility</i>
+              </div>
+              <input id="reqUniforme" name="reqUniforme" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 divContratacion">
+            <label for="correoConsultor">Correo Consultor</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">person</i>
+              </div>
+              <input id="correoConsultor" name="correoConsultor" type="text" class="form-control" readonly disabled>
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 divContratacion">
+            <label for="idRequisicion">N Requisición</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">filter_1</i>
+              </div>
+              <input id="idRequisicion" name="idRequisicion" type="text" class="form-control" readonly>
+            </div>
+          </div>
+
+          <div
+            class="form-group col-sm-3 divContratacion divAlistamiento divCarnetizacion readonlyCarnetizacion divLider">
+            <label for="justificacion">Motivo Vacante</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">short_text</i>
+              </div>
+              <input id="justificacion" name="justificacion" type="text" class="form-control" readonly>
+            </div>
+          </div>
+
+          <div
+            class="form-group col-sm-3 divContratacion divAlistamiento divAprendizaje divCarnetizacion readonlyCarnetizacion divLider">
+            <label for="ciudadEntrega">Ciudad de Residencia / Entrega</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">short_text</i>
+              </div>
+              <input id="ciudadEntrega" name="ciudadEntrega" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div
+            class="form-group col-sm-3 divContratacion divAlistamiento divAprendizaje divCarnetizacion readonlyCarnetizacion"
+            hidden>
+            <label for="tipoUbicacion">Tipo de Ubicación</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">place</i>
+              </div>
+              <input id="tipoUbicacion" name="tipoUbicacion" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div
+            class="form-group col-sm-3 divContratacion divAlistamiento divAprendizaje divCarnetizacion readonlyCarnetizacion"
+            hidden>
+            <label for="jornadaLaboral">Jornada Laboral</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">date_range</i>
+              </div>
+              <input id="jornadaLaboral" name="jornadaLaboral" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div
+            class="form-group col-sm-3 divContratacion divAlistamiento divAprendizaje divCarnetizacion readonlyCarnetizacion"
+            hidden>
+            <label for="nuevaPosicion">Nueva Posición</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">person</i>
+              </div>
+              <input id="nuevaPosicion" name="nuevaPosicion" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div
+            class="form-group col-sm-3 divContratacion divAlistamiento divAprendizaje divCarnetizacion readonlyCarnetizacion">
+            <label for="subEmpresa">Empresa</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">business</i>
+              </div>
+              <input id="subEmpresa" name="subEmpresa" type="text" class="form-control" readonly readonly disabled>
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 divContratacion">
+            <label for="duracionContrato">Duración del contrato</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">assignment</i>
+              </div>
+              <select id="duracionContrato" name="duracionContrato" class="form-control duracion_contrato custom-select">
+                  <option value="" selected readonly disabled hidden>Selecciona</option>
+                </select>
+              <!-- <input id="duracionContrato" name="duracionContrato" type="text" class="form-control" readonly> -->
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 divContratacion noObligatorio">
+            <label for="fechaVencimientoContrato">Fecha Vencimiento del Contrato</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">date_range</i>
+              </div>
+              <input id="fechaVencimientoContrato" name="fechaVencimientoContrato" type="date" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 divContratacion">
+            <label for="tiempoPeriodoPrueba">Tiempo periodo de prueba</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">date_range</i>
+              </div>
+              <input id="tiempoPeriodoPrueba" name="tiempoPeriodoPrueba" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 divContratacion divCarnetizacion readonlyCarnetizacion">
+            <label for="modalidadTrabajo">Modalidad de trabajo</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">short_text</i>
+              </div>
+              <input id="modalidadTrabajo" name="modalidadTrabajo" class="form-control " readonly>
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 divContratacion">
+            <label for="actaAprobacionCargo">Acta Aprobación Cargo</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">assignment</i>
+              </div>
+              <input id="actaAprobacionCargo" name="actaAprobacionCargo" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 divCarnetizacion divAlistamiento readonlyCarnetizacion">
+            <label for="departamento">Departamento</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">assignment</i>
+              </div>
+              <input id="departamento" name="departamento" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 divCarnetizacion divAlistamiento readonlyCarnetizacion">
+            <label for="ciudad">Ciudad</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">assignment</i>
+              </div>
+              <input id="ciudad" name="ciudad" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 div-aprendizaje divCarnetizacion noObligatorio readonlyCarnetizacion">
+            <label for="fechaIniEtapaLecti_apr">Fecha Inicio Etapa Lectivo</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">date_range</i>
+              </div>
+              <input id="fechaIniEtapaLecti_apr" name="fechaIniEtapaLecti_apr" type="date" class="form-control divSENA divAprDAVPracUni fechaIniEtapaLecti" data-principa="fechaIniEtapaLecti">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 divCarnetizacion readonlyCarnetizacion">
+            <label for="fechaFinEtapaLecti_contra">Fecha Fin Etapa Lectivo</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">date_range</i>
+              </div>
+              <input id="fechaFinEtapaLecti_contra" name="fechaFinEtapaLecti_contra" type="date" class="form-control divSENA divAprDAVPracUni fechaFinEtapaLecti" data-principa="fechaFinEtapaLecti">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 divCarnetizacion divAprendizaje noObligatorio readonlyCarnetizacion">
+            <label for="fechaIniEtapaPrac_apr">Fecha Inicio Etapa Práctica</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">date_range</i>
+              </div>
+              <input id="fechaIniEtapaPrac_apr" name="fechaIniEtapaPrac_apr" type="date" class="form-control divSENA divAprDAVPracUni fechaIniEtapaPrac" data-principa="fechaIniEtapaPrac">
+            </div>
+          </div>
+          <div class="form-group col-sm-3 divCarnetizacion readonlyCarnetizacion">
+            <label for="fechaFinEtapaPrac_contra">Fecha Fin Etapa Práctica</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">date_range</i>
+              </div>
+              <input id="fechaFinEtapaPrac_contra" name="fechaFinEtapaPrac_contra" type="date" class="form-control fechaFinEtapaPrac" data-principa="fechaFinEtapaPrac">
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 divCarnetizacion readonlyCarnetizacion">
+            <label for="fechaInicioCarnetizacion">Fecha inicio carnetización</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">date_range</i>
+              </div>
+              <input id="fechaInicioCarnetizacion" name="fechaInicioCarnetizacion" type="text" class="form-control" readonly disabled>
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 divAlistamiento">
+            <label for="fechaInicioAlistamiento">Fecha inicio alistamiento</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">date_range</i>
+              </div>
+              <input id="fechaInicioAlistamiento" name="fechaInicioAlistamiento" type="text" class="form-control"readonly disabled>
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 divAprendizaje">
+            <label for="fechaInicioAprendizaje">Fecha inicio aprendizaje</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">date_range</i>
+              </div>
+              <input id="fechaInicioAprendizaje" name="fechaInicioAprendizaje" type="text" class="form-control"readonly disabled>
+            </div>
+          </div>
+          <!-- <div class="form-group col-sm-3 divAlistamiento">
+              <label for="idHojaDeVida1">ID Hoja de Vida</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <i class="input-group-text material-icons">payment</i>
+                </div>
+                <input id="idHojaDeVida1" name="idHojaDeVida1" type="text" maxlength="12" class="form-control idHojaDeVida" readonly>
+              </div>
+            </div> -->
+
+          <div class="form-group col-sm-3 divAlistamiento">
+            <label for="fechaCreacionSARH1">Fecha Creación Pipol</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">date_range</i>
+              </div>
+              <input id="fechaCreacionSARH1" name="fechaCreacionSARH1" type="text" class="form-control fechaCreacionSARH" readonly>
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 divAlistamiento">
+          
+          </div>
+
+          <div class="form-group col-sm-3 divAlistamiento">
+            <label for="fechaIniEtapaLecti1">Fecha Inicio Etapa Lectivo</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">date_range</i>
+              </div>
+              <input id="fechaIniEtapaLecti1" name="fechaIniEtapaLecti1" type="text" class="form-control fechaIniEtapaLecti" readonly>
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 divAlistamiento">
+            <label for="fechaFinEtapaLecti1">Fecha Fin Etapa Lectivo</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">date_range</i>
+              </div>
+              <input id="fechaFinEtapaLecti1" name="fechaFinEtapaLecti1" type="text" class="form-control fechaFinEtapaLecti" readonly>
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 divAlistamiento">
+            <label for="fechaIniEtapaPrac1">Fecha Inicio Etapa Práctica</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">date_range</i>
+              </div>
+              <input id="fechaIniEtapaPrac1" name="fechaIniEtapaPrac1" type="text" class="form-control fechaIniEtapaPrac" readonly>
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 divAlistamiento">
+            <label for="fechaFinEtapaPrac1">Fecha Fin Etapa Práctica</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">date_range</i>
+              </div>
+              <input id="fechaFinEtapaPrac1" name="fechaFinEtapaPrac1" type="text" class="form-control fechaFinEtapaPrac" readonly>
+            </div>
+          </div>
+
+          <div class="form-group col-sm-3 Alistamiento-CORREDORES Carnetizacion-CORREDORES ocultarDetalles"
+            style="display:none">
+            <label for="puestoFisico">Puesto Fisico</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">assignment</i>
+              </div>
+              <input id="puestoFisico" name="puestoFisico" type="text" class="form-control" readonly>
+            </div>
+          </div>
+
+          <div class="form-group col-sm-6 divContratacion">
+            <label for="nCtaNomina">N Cuenta Nómina</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">payment</i>
+              </div>
+              <input id="nCtaNomina" name="nCtaNomina" type="text" class="form-control">
+            </div>
+          </div>
+        </div>
+
+
+
+        <div class="div-area div-contratacion">
+          <div class="card-panel color-dav-grad-detalle-Contratacion-titulo shadow-dav">
+            <h4 style="margin: 0px; color:white;">Contratación</h4>
+          </div>
+
+          <div class="form-row">
+            <label><?!= nota1Contratacion ?></label>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-sm-1"></div>
+
+            <div class="form-group col-sm-8">
+              <div class="form-row">
+                <div class="form-group col-sm">
+                  <div class="col-sm">
+                    <a id="btn-carpetaCaso" href="" target="_blank" class="btn btn-primary">Ver Carpeta Documentos</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label><?!= nota2Contratacion ?></label>
+          </div>
+
+          <div class="form-row">
+            <div class="col-sm-1"></div>
+
+            <div class="form-group col-sm">
+              <div class="form-row">
+                <h5 class="modal-title" id="tituloCheckDocumentos">CheckList Documentos</h5>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-sm-4">
+                  <div class="custom-control custom-checkbox text-left">
+                    <H7 align="center"> Doc Obligatorios </H7>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm-4">
+                  <div class="custom-control custom-checkbox text-left" style="display:none">
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-sm-4">
+                  <div class="custom-control custom-checkbox text-left">
+                    <input type="checkbox" class="custom-control-input" id="checkSelTodosObli" name="checkSelTodosObli" align="left">
+                    <label class="custom-control-label" for="checkSelTodosObli" align="left">Seleccionar Todos</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-sm-4">
+                  <div class="custom-control custom-checkbox text-left">
+                    <input type="checkbox" class="custom-control-input check-docs aprendiz practicante-universitario profesional-practica salarial integral" id="checkAfiliacionEPS" name="checkAfiliacionEPS" align="left">
+                    <label class="custom-control-label" for="checkAfiliacionEPS" align="left">Certificado de afiliación EPS</label>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm-4">
+                  <div class="custom-control custom-checkbox text-left">
+                    <input type="checkbox" class="custom-control-input check-docs salarial integral aprendiz practicante-universitario profesional-practica" id="checkFoto3x4" name="checkFoto3x4" align="left">
+                    <label class="custom-control-label" for="checkFoto3x4" align="left">Foto de acuerdo a los lineamientos
+                        <a href="https://comunicaciones.davivienda.com/carnet-davivienda" target="_blank">aquí</a>
+                      </label>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm-4">
+                  <div class="custom-control custom-checkbox text-left">
+                    <input type="checkbox" class="custom-control-input check-docs aprendiz practicante-universitario profesional-practica salarial integral" id="checkConsAfilADRES" name="checkConsAfilADRES" align="left">
+                    <label class="custom-control-label" for="checkConsAfilADRES" align="left">Certificado afiliación ADRES</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-sm-4">
+                  <div class="custom-control custom-checkbox text-left">
+                    <input type="checkbox" class="custom-control-input check-docs divAprDAVPracUni divIndefSIDAV profesional-practica salarial" id="checkCerFondoCesantias" name="checkCerFondoCesantias" align="left">
+                    <label class="custom-control-label" for="checkCerFondoCesantias" align="left">Certificado Fondo de Cesantías</label>
+                  </div>
+                </div>
+                <div class="form-group col-sm-4">
+                  <div class="custom-control custom-checkbox text-left">
+                    <input type="checkbox" class="custom-control-input check-docs aprendiz practicante-universitario profesional-practica salarial integral" id="checkDocIdentidad150" name="checkDocIdentidad150" align="left">
+                    <label class="custom-control-label" for="checkDocIdentidad150" align="left">Documento identidad a color al 150%</label>
+                  </div>
+                </div>
+                <div class="form-group col-sm-4">
+                  <div class="custom-control custom-checkbox text-left">
+                    <input type="checkbox" class="custom-control-input check-docs salarial integral aprendiz practicante-universitario profesional-practica" id="checkCertCuentaDAMAS" name="checkCertCuentaDAMAS" align="left">
+                    <label class="custom-control-label" for="checkCertCuentaDAMAS" align="left">Certificado de cuenta de ahorros DAMAS tradicional</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-sm-4">
+                  <div class="custom-control custom-checkbox text-left">
+                    <input type="checkbox" class="custom-control-input check-docs divAprDAVPracUni profesional-practica salarial integral" id="checkCerFondoPensiones" name="checkCerFondoPensiones" align="left">
+                    <label class="custom-control-label" for="checkCerFondoPensiones" align="left">Certificado Fondo de Pensiones</label>
+                  </div>
+                </div>
+
+              </div>
+
+              <hr>
+
+              <div class="form-row">
+                <div class="form-group col-sm">
+                  <label for="documCompletos">¿Documentos Completos?</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">add_location</i>
+                    </div>
+                    <select id="documCompletos" name="documCompletos" class="form-control custom-select">
+                        <option value="" selected readonly disabled hidden>Selecciona</option>
+                      </select>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm">
+                  <label for="observacionesDocumentosFaltantes">Observaciones documentos faltantes</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">add_location</i>
+                    </div>
+                    <textarea id="observacionesDocumentosFaltantes" name="observacionesDocumentosFaltantes" class="form-control"></textarea>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm-2">
+                  <div class="col-sm">
+                    <button id="btn-cargueDocExitoso" type="button" class="btn btn-primary" style="margin-top: 2rem;">Activar Procesos</button>
+                  </div>
+                </div>
+                <div class="col-sm-3 text-left">
+                  <label hidden><?!= notaEnivoCarnetizacion ?></label>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <h5 class="modal-title" id="tituloInfoIngresar">Información por ingresar</h5>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-sm-4">
+                  <label for="validaciónPortalCaprendizaje">Validación Portal CAprendizaje</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">local_hospital</i>
+                    </div>
+                    <select id="validaciónPortalCaprendizaje" name="validaciónPortalCaprendizaje" class="form-control custom-select divSENA divAprDAVPracUni">
+                        <option value="" selected readonly disabled hidden>Selecciona</option>
+                      </select>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm-4">
+                  <label for="universidad">Universidad/Institución</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">payment</i>
+                    </div>
+                    <input id="universidad" name="universidad" type="text" class="form-control divSENA divAprDAVPracUni">
+                  </div>
+                </div>
+
+                <div class="form-group col-sm-4">
+                  <label for="carrera">Carrera</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">payment</i>
+                    </div>
+                    <input id="carrera" name="carrera" type="text" class="form-control divSENA divAprDAVPracUni">
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-sm-3 noObligatorio">
+                  <label for="fechaIniEtapaLecti">Fecha Inicio Etapa Lectivo</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">date_range</i>
+                    </div>
+                    <input id="fechaIniEtapaLecti" name="fechaIniEtapaLecti" type="date" class="form-control divSENA divAprDAVPracUni apoyo-sostenimiento">
+                  </div>
+                </div>
+                <div class="form-group col-sm-3 noObligatorio">
+                  <label for="fechaFinEtapaLecti">Fecha Fin Etapa Lectivo</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">date_range</i>
+                    </div>
+                    <input id="fechaFinEtapaLecti" name="fechaFinEtapaLecti" type="date" class="form-control divSENA divAprDAVPracUni apoyo-sostenimiento">
+                  </div>
+                </div>
+
+                <div class="form-group col-sm-3 noObligatorio">
+                  <label for="fechaIniEtapaPrac">Fecha Inicio Etapa Práctica</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">date_range</i>
+                    </div>
+                    <input id="fechaIniEtapaPrac" name="fechaIniEtapaPrac" type="date" class="form-control divSENA divAprDAVPracUni apoyo-sostenimiento">
+                  </div>
+                </div>
+
+                <div class="form-group col-sm-3 noObligatorio">
+                  <label for="fechaFinEtapaPrac">Fecha Fin Etapa Práctica</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">date_range</i>
+                    </div>
+                    <input id="fechaFinEtapaPrac" name="fechaFinEtapaPrac" type="date" class="form-control divSENA divAprDAVPracUni apoyo-sostenimiento">
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-sm-6 noObligatorio">
+                  <label for="apoyoSostenimientoEtapaLectiva">Apoyo sostenimiento etapa lectiva</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">attach_money</i>
+                    </div>
+                    <input id="apoyoSostenimientoEtapaLectiva" name="apoyoSostenimientoEtapaLectiva" type="text" class="form-control divSENA divAprDAVPracUni">
+                  </div>
+                </div>
+                <div class="form-group col-sm-6 noObligatorio">
+                  <label for="apoyoSostenimientoEtapaProductiva">Apoyo sostenimiento etapa productiva</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">attach_money</i>
+                    </div>
+                    <input id="apoyoSostenimientoEtapaProductiva" name="apoyoSostenimientoEtapaProductiva" type="text"  class="form-control divSENA divAprDAVPracUni">
+                  </div>
+                </div>
+              </div>
+
+              <hr>
+
+              <div class="form-row">
+                <h5 class="modal-title" id="tituloAfiliaciones">Realizar las afiliaciones correspondientes del nuevo
+                  funcionario</h5>
+              </div>
+
+
+
+              <div class="form-row">
+                <div class="form-group col-sm-6">
+                  <div class="d-flex flex-column">
+                    <div class="p-1 col-sm-10">
+                      <label for="arl">ARL</label>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <i class="input-group-text material-icons">local_hospital</i>
+                        </div>
+                        <select id="arl" name="arl" class="form-control custom-select">
+                        <option value="" selected>Selecciona</option>
+                      </select>
+                      </div>
+                    </div>
+
+                    <div class="p-1 col-sm-10">
+                      <label for="eps">EPS</label>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <i class="input-group-text material-icons">local_hospital</i>
+                        </div>
+                        <select id="eps" name="eps" class="form-control custom-select">
+                        <option value="" selected>Selecciona</option>
+                      </select>
+                      </div>
+                    </div>
+
+                    <div class="p-1 col-sm-10">
+                      <label for="afp">Fondo de Pensiones</label>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <i class="input-group-text material-icons">local_hospital</i>
+                        </div>
+                        <select id="afp" name="afp" class="form-control custom-select">
+                        <option value="" selected>Selecciona</option>
+                      </select>
+                      </div>
+                    </div>
+
+                    <div class="p-1 col-sm-10">
+                      <label for="fondoCesantias">Fondo De Cesantías</label>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <i class="input-group-text material-icons">add_location</i>
+                        </div>
+                        <select id="fondoCesantias" name="fondoCesantias" class="form-control custom-select">
+                        <option value="" selected >Selecciona</option>
+                      </select>
+                      </div>
+                    </div>
+
+                    <div class="p-1 col-sm-10">
+                      <label for="cajaCompensacion">Caja De Compensación</label>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <i class="input-group-text material-icons">payment</i>
+                        </div>
+                        <select id="cajaCompensacion" name="cajaCompensacion" class="form-control custom-select">
+                        <option value="" selected >Selecciona</option>
+                      </select>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+                <div class="col-sm-1 linea-vertical-izquierda">
+
+                </div>
+
+                <div class="col-sm-4">
+                  <div class="form-row">
+                    <div class="form-group col-sm-12">
+                      <b>Selecciona las afiliaciones que deseas gestionar</b>
+                    </div>
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group col-sm-6">
+                      <div class="custom-control custom-checkbox text-left">
+                        <input type="checkbox" class="custom-control-input" id="notificacionCesantias" name="notificacionCesantias" align="left">
+                        <label class="custom-control-label" for="notificacionCesantias" align="left">Fondo de Cesantías</label>
+                      </div>
+                    </div>
+
+                    <div class="form-group col-sm-6">
+                      <div class="custom-control custom-checkbox text-left">
+                        <input type="checkbox" class="custom-control-input" id="notificacionPensiones" name="notificacionPensiones" align="left">
+                        <label class="custom-control-label" for="notificacionPensiones" align="left">Fondo de Pensiones</label>
+                      </div>
+                    </div>
+                    <div class="form-group col-sm-6">
+                      <div class="custom-control custom-checkbox text-left">
+                        <input type="checkbox" class="custom-control-input" id="notificacionEPS" name="notificacionEPS" align="left">
+                        <label class="custom-control-label" for="notificacionEPS" align="left">EPS</label>
+                      </div>
+                    </div>
+
+                    <div class="form-group col-sm-6">
+                      <div class="custom-control custom-checkbox text-left">
+                        <input type="checkbox" class="custom-control-input" id="notificiacionCajaCompensacion" name="notificiacionCajaCompensacion" align="left">
+                        <label class="custom-control-label" for="notificiacionCajaCompensacion" align="left">Caja de Compensación</label>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  <div class="form-row">
+                    <div class="form-group col-sm-12 d-flex justify-content-center">
+                      <button id="btn-envioNotificacionAfiliaciones" type="button" class="btn btn-primary " style="margin-top: 2rem;">Enviar notificación de afiliación</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label><?!= nota3Contratacion ?> </label>
+          </div>
+
+          <div class="form-row">
+            <div class="col-sm-1"></div>
+
+
+            <div class="col-sm">
+              <div class="form-row">
+                <div class="form-group col-sm">
+                  <label for="citaContratacion">Citación Contratación</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">date_range</i>
+                    </div>
+                    <input id="citaContratacion" name="citaContratacion" type="datetime-local" class="form-control nolimitefecha">
+                  </div>
+                </div>
+
+                <div class="form-group col-sm">
+                  <label for="respContrato">Correo Responsable Contrato</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">person</i>
+                    </div>
+                    <input id="respContrato" name="respContrato" type="text" class="form-control">
+                  </div>
+                </div>
+
+                <div class="form-group col-sm">
+                  <button id="btn-agendarContratacion" type="button" class="btn btn-primary" style="margin-top: 2rem;" >Agendar</button>
+                  <button hidden id="btn-agendarContratacionMasivo" type="button" class="btn btn-primary" style="margin-top: 2rem;" >Abrir grupos de agendamiento</button>
+                </div>
+              </div>
+
+              <div class="form-row" id="agenda-masiva" hidden>
+                <input id="tabla-registrar" type="text" name="tabla-registrar" class="noDeshabilitar" hidden>
+                <div class="form-group col-sm">
+                  <div class="form-group grupos-masivo grupos" id="grupos-masivos">
+                    <input id="auxContadorGrupoMasivo" type="number" name="auxContadorGrupoMasivo"  class="noDeshabilitar" hidden>
+                    <input id="arrayIdUnico" type="text" name="arrayIdUnico" class="noDeshabilitar"  hidden>
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group col-sm">
+                      <div id="tablas-masivas" class="form-group col-sm">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="grupos form-row">
+                    <div class="form-group col-sm">
+                      <button id="btn-crearGrupoMasivo" type="button" onclick="crearGrupoMasivo()" class="btn btn-primary" style="margin-top: 2rem;" >Crear nuevo grupo</button>
+                      <button id="btn-agendarMasivo" type="button"  class="btn btn-primary" style="margin-top: 2rem;" ><i class="bi bi-calendar-check"></i>Agendar </button>
+                      <button id="btn-generarContratos" type="button"  class="btn btn-primary" style="margin-top: 2rem;" ><i class="bi bi-file-earmark-ruled"></i>Generar contratos</button>
+                      <button id="btn-generarPlanos" type="button"  class="btn btn-success" style="margin-top: 2rem;" ><i class="bi bi-file-earmark-check"></i>Crear archivo plano</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-row">
+
+                <div class="col-sm">
+                  <button id="btn-envioSeccionCuatro" type="button" class="btn btn-primary" style="margin-top: 2rem;" >Generar Contrato</button>
+                  <!--<button id="btn-reenvioSeccionCuatro" type="button" class="btn btn-primary" style="margin-top: 2rem;">Reenviar Contrato</button>-->
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="form-row">
+            <label><?!= nota4Contratacion ?></label>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-sm-1"></div>
+
+            <div class="form-group col-sm">
+              <div class="form-row">
+                <div class="form-group col-sm-4">
+                  <label for="contratoFirmado">¿Contrato Firmado?</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">add_location</i>
+                    </div>
+                    <select id="contratoFirmado" name="contratoFirmado" class="form-control custom-select">
+                        <option value="" selected readonly disabled hidden>Selecciona</option>
+                      </select>
+                  </div>
+                </div>
+
+
+                <div class="form-group col-sm-4">
+                  <label for="fechaFirmContr">Fecha Firma de Contrato</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">date_range</i>
+                    </div>
+                    <input id="fechaFirmContr" name="fechaFirmContr" type="date" class="form-control nolimitefecha">
+                  </div>
+                </div>
+
+                <div class="col-sm">
+                  <button id="btn-fechaIngreso" type="button" class="btn btn-primary" style="margin-top: 2rem;" >Enviar</button>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-sm-4">
+                  <label for="hvCreadaSARH">¿HV Creada en Pipol?</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">add_location</i>
+                    </div>
+                    <select id="hvCreadaSARH" name="hvCreadaSARH" class="form-control custom-select">
+                        <option value="" selected readonly disabled hidden>Selecciona</option>
+                      </select>
+                  </div>
+                </div>
+                <div class="form-group col-sm-4">
+                  <label for="fechaCreacionSARH">Fecha Creación Pipol</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">date_range</i>
+                    </div>
+                    <input id="fechaCreacionSARH" name="fechaCreacionSARH" type="date" class="form-control nolimitefecha">
+                  </div>
+                </div>
+
+                <div class="col-sm">
+                  <button id="btn-envioAlistamiento" type="button" class="btn btn-primary" style="margin-top: 2rem;" >Enviar Alistamiento</button>
+                </div>
+              </div>
+
+              <div class="form-row">
+
+                <div class="form-group col-sm">
+                  <label for="nombreContactoEmergencia">Nombre Contacto de emergencia</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">person</i>
+                    </div>
+                    <input id="nombreContactoEmergencia" name="nombreContactoEmergencia" type="text" class="form-control">
+                  </div>
+                </div>
+
+                <div class="form-group col-sm">
+                  <label for="parentescoContactoEmergencia">Parentesco Contacto de emergencia</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">person</i>
+                    </div>
+                    <input id="parentescoContactoEmergencia" name="parentescoContactoEmergencia" type="text" class="form-control">
+                  </div>
+                </div>
+
+                <div class="form-group col-sm">
+                  <label for="celularContactoEmergencia">Celular Contacto de emergencia</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">person</i>
+                    </div>
+                    <input id="celularContactoEmergencia" name="celularContactoEmergencia" type="text" class="form-control">
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label><?!= nota5Contratacion ?></label>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-sm-1"></div>
+
+            <div class="form-group col-sm">
+              <label for="fechaIngreso">Fecha de Ingreso</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <i class="input-group-text material-icons">date_range</i>
+                </div>
+                <input id="fechaIngreso" name="fechaIngreso" type="date" class="form-control fechaIngreso">
+              </div>
+            </div>
+
+            <div class="form-group col-sm-4">
+              <label for="correoLider">Correo Lider/Padrino</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <i class="input-group-text material-icons">email</i>
+                </div>
+                <input id="correoLider" name="correoLider" type="text" class="form-control noDeshabilitar">
+                <input id="correoPadrino" name="correoPadrino" type="text" class="form-control noDeshabilitar">
+              </div>
+            </div>
+
+            <div class="col-sm">
+              <button id="btn-envioContratacion" type="button" class="btn btn-primary" style="margin-top: 2rem;" >Enviar</button>
+            </div>
+          </div>
+
+          <div class="form-row" hidden>
+            <label>Con el fin de mejora continua, enviarle nuestra encuesta de satisfacción, acá nos calificará de acuerdo a su experiencia en esta etapa de contratación. </label>
+          </div>
+
+          <div class="form-row" hidden>
+            <div class="form-group col-sm-1"></div>
+
+            <div class="form-group col-sm">
+              <label for="correoEncuestaSatisfaccion">Encuesta de Satisfacción</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <i class="input-group-text material-icons">date_range</i>
+                </div>
+                <input id="correoEncuestaSatisfaccion" name="correoEncuestaSatisfaccion" type="text" class="form-control correo" readonly disabled>
+              </div>
+            </div>
+
+            <div class="form-group col-sm">
+              <label for="fechaEnvio">Fecha de Envío</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <i class="input-group-text material-icons">date_range</i>
+                </div>
+                <input id="fechaEnvio" name="fechaEnvio" type="date" class="form-control">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="div-area div-carnetizacion">
+          <div class="card-panel color-dav-grad-detalle-Carnetizacion-titulo shadow-dav">
+            <h4 style="margin: 0px; color:white;">Carnetización</h4>
+          </div>
+
+          <div class="form-row">
+            <label><?!= nota1Carnetizacion ?></label>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-sm-1"></div>
+
+            <div class="form-group col-sm-8">
+              <div class="form-row">
+                <div class="form-group col-sm">
+                  <!-- <label for="documFaltantes2">Ver Carpeta Documentos</label> -->
+                </div>
+
+                <div class="form-group col-sm">
+                  <div class="col-sm">
+                    <a id="btn-carpetaCaso2" href="" target="_blank" class="btn btn-primary">Carpeta Documentos</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!--<div class="form-group col-sm">
+                <div class="form-row">
+                  <div class="form-group col-sm-4">
+                    <label for="linkFotoCarnetizacion">Link foto</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <i class="input-group-text material-icons">star</i>
+                      </div>
+                      <input id="linkFotoCarnetizacion" name="linkFotoCarnetizacion" type="text" class="form-control" readonly disabled>
+                    </div>
+                  </div>
+                </div>
+              </div>-->
+          </div>
+
+          <div class="form-row">
+            <label><?!= nota2Carnetizacion ?></label>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-sm-1"></div>
+
+            <div class="form-group col-sm">
+              <div class="form-row">
+                <div class="form-group col-sm">
+                  <label for="codigoCarnetDigital">Código autorización carné digital</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">add_location</i>
+                    </div>
+                    <input id="codigoCarnetDigital" name="codigoCarnetDigital" type="text" class="form-control" >
+                  </div>
+                </div>
+
+                <div class="form-group col-sm">
+                  <label for="fotoCorrecta">Foto correcta</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">star</i>
+                    </div>
+                    <select id="fotoCorrecta" name="fotoCorrecta" class="form-control custom-select">
+                        <option value="" selected readonly disabled hidden>Selecciona</option>
+                        <option>Si</option>
+                        <option>No</option>
+                      </select>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm-3 my-4">
+                  <button id="btn-enviarRecordatorioFoto" type="button" class="btn btn-primary">Enviar Recordatorio</button>
+                  <button id="btn-accessMobile" type="button" class="btn btn-primary my-2">Enviar Código Access Mobile</button>
+                </div>
+                <!-- <div class="form-group col-sm-3 my-4">
+                    
+                  </div> -->
+              </div>
+            </div>
+
+          </div>
+
+          <div class="form-row">
+            <label><?!= nota3Carnetizacion ?></label>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-sm-1"></div>
+
+            <div class="form-group col-sm">
+              <div class="form-row">
+                <div class="form-group col-sm">
+                  <label for="gestionadoCarnetFisico">Gestionado Carné Fisico</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">star</i>
+                    </div>
+                    <select id="gestionadoCarnetFisico" name="gestionadoCarnetFisico" class="form-control custom-select">
+                        <option value="" selected readonly disabled hidden>Selecciona</option>
+                      </select>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm">
+                  <label for="fechaEntregaCarnet">Fecha Entrega Carné</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">event</i>
+                    </div>
+                    <input id="fechaEntregaCarnet" name="fechaEntregaCarnet" type="date" class="form-control">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="div-area div-aprendizaje">
+          <div class="card-panel color-dav-grad shadow-dav">
+            <h4 style="margin: 0px; color:white;">Datos Relevantes</h4>
+          </div>
+
+          <div class="form-row">
+            <label><?!= nota1Aprendizaje ?></label>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-sm-1"></div>
+
+            <div class="form-group col-sm">
+              <div class="form-row">
+                <div class="form-group col-sm">
+                  <label for="correoElectronicoAprendizaje">Correo Electronico</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="correoElectronicoAprendizaje" name="correoElectronicoAprendizaje" type="text" class="form-control correoElectronico" readonly>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm">
+                  <label for="usuarioRedAprendizaje2">Usuario de RED</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="usuarioRedAprendizaje2" name="usuarioRedAprendizaje" type="text" class="form-control usuarioRed" readonly disabled>
+                  </div>
+                </div>
+
+                <!-- <div class="form-group col-sm">
+                    <label for="kitRecibidoAprendizaje2">¿KIT recibido?</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <i class="input-group-text material-icons">local_hospital</i>
+                      </div>
+                      <input id="kitRecibidoAprendizaje2" name="kitRecibidoAprendizaje" type="text" class="form-control kitRecibido" readonly disabled>
+                    </div>
+                  </div> -->
+
+                <!-- <div class="form-group col-sm">
+                    <label for="fechaRecibidoKITAprendizaje2">Fecha Recibido</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <i class="input-group-text material-icons">local_hospital</i>
+                      </div>
+                      <input id="fechaRecibidoKITAprendizaje2" name="fechaRecibidoKITAprendizaje" type="text" class="form-control fechaRecibidoKIT" readonly disabled>
+                    </div>
+                  </div> -->
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-sm">
+                  <label for="fechaIngreso2">Fecha de Ingreso</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">local_hospital</i>
+                    </div>
+                    <input id="fechaIngreso2" name="fechaIngreso" type="date" class="form-control fechaIngreso" readonly>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm" hidden>
+                  <label for="fechaInduccionApre2">Fecha Citación Inducción</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">local_hospital</i>
+                    </div>
+                    <input id="fechaInduccionApre2" name="fechaInduccionApre" type="date" class="form-control fechaInduccionApre" readonly>
+                  </div>
+                </div>
+
+                <!-- <div class="form-group col-sm">
+                    <label for="accesosCorreoEmail2">¿Accesos y Correo OK?</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <i class="input-group-text material-icons">payment</i>
+                      </div>
+                      <input id="accesosCorreoEmail2" name="accesosCorreoEmail2" type="text" class="form-control accesosCorreoEmail" readonly disabled>
+                    </div>
+                  </div> -->
+
+                <div class="form-group col-sm">
+                  <label for="usuarioCorreo2">¿Candidato cuenta con usuarios y correo?</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <select id="usuarioCorreo2" name="usuarioCorreo2" class="form-control custom-select usuarioCorreo" >
+                        <option value="" selected readonly disabled hidden>Selecciona</option>
+                        <option value="Si" >Si</option>
+                        <option value="No" >No</option>
+                      </select>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm">
+                  <button id="btn-enviarGestionUsuarios2" type="button" class="btn btn-primary" style="margin-top: 2rem;">Alertamiento a gestión de usuarios</button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <div class="card-panel color-dav-grad shadow-dav">
+            <h4 style="margin: 0px; color:white;">Aprendizaje</h4>
+          </div>
+
+          <div class="form-row">
+            <label><?!= nota2Aprendizaje ?></label>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-sm-1"></div>
+
+            <div class="form-group col-sm">
+              <div class="form-row">
+                <div class="form-group col-sm">
+                  <label for="citacionRealInduccion">Fecha Programas de Acompañamiento</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="citacionRealInduccion" name="citacionRealInduccion" type="date" class="form-control">
+                  </div>
+                </div>
+
+                <div class="form-group col-sm">
+                  <label for="contenidoCargado">¿Contenido Cargado?</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <select id="contenidoCargado" name="contenidoCargado" class="form-control custom-select">
+                        <option value="" selected readonly disabled hidden>Selecciona</option>
+                      </select>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm">
+                  <label for="fechaCargueContenido">Fecha Cargue Contenido</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="fechaCargueContenido" name="fechaCargueContenido" type="date" class="form-control">
+                  </div>
+                </div>
+
+                <div class="col-sm">
+                  <button id="btn-citaInduccion2" type="button" class="btn btn-primary" style="margin-top: 2rem;" >Enviar</button>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-sm-3">
+                  <label for="correoLiderAprendizaje">Correo Lider</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="correoLiderAprendizaje" name="correoLiderAprendizaje" type="text" data-principal="correoLider" class="form-control correoLider">
+                  </div>
+                </div>
+
+                <div class="form-group col-sm-3">
+                  <label for="correoPadrinoAprendizaje">Correo Padrino</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="correoPadrinoAprendizaje" name="correoPadrinoAprendizaje" data-principal="correoPadrino" type="text" class="form-control correoPadrino">
+                  </div>
+                </div>
+              </div>
+
+              <!-- <div class="form-row">
+                  <label>Para garantizar y cumplir los tiempos de Aprendizaje, acá garantizaremos fechas, contenidos, para su inducción.</label>
+                </div> -->
+
+              <div class="form-row" style="display:none">
+                <div class="col-sm">
+                  <!-- <button id="btn-verCalendarioInduccion" type="button" class="btn btn-primary" style="margin-top: 2rem;">
+                      Ver Disponibilidad
+                    </button> -->
+                  <button id="btn-agendarInduccion" type="button" class="btn btn-primary" style="margin-top: 2rem;" >Agendar Inducción</button>
+                </div>
+              </div>
+              <div id="div-calendarioInduccion" class="form-row div-calendario" style="display:none">
+                <iframe
+                  src="https://calendar.google.com/calendar/embed?src=c_cplntkv1qmjf73l4e79cvh60v8@group.calendar.google.com&ctz=America%2FBogota"
+                  style="border: 0;margin: 0 auto;" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-panel color-dav-grad shadow-dav">
+            <h4 style="margin: 0px; color:white;">Confirmación UXplora</h4>
+          </div>
+
+          <div class="form-row">
+            <label><?!= nota3Aprendizaje ?></label>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-sm-1"></div>
+
+            <div class="form-group col-sm">
+              <div class="form-row">
+                <div class="form-group col-sm">
+                  <label for="porcentajeFinalizacionInduccion">Porcentaje de Finalización Inducción</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="porcentajeFinalizacionInduccion" name="porcentajeFinalizacionInduccion" type="number"  class="form-control" readonly readonly disabled>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm">
+                  <label for="usuarioXplora">¿El funcionario tiene usuario en Xplora?</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">assignment</i>
+                    </div>
+                    <select id="usuarioXplora" name="usuarioXplora" class="form-control custom-select">
+                        <option value="" selected readonly disabled hidden>Selecciona</option>
+                      </select>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm">
+
+                </div>
+
+                <div class="form-group col-sm">
+
+                </div>
+              </div>
+
+              <div class="form-row">
+                <!-- <div class="form-group col-sm">
+                    <label for="teEstabamosEsperando">Te estábamos esperando</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <i class="input-group-text material-icons">question_answer</i>
+                      </div>
+                      <input id="teEstabamosEsperando" name="teEstabamosEsperando" type="text" class="form-control" readonly>
+                    </div>
+                  </div> -->
+
+                <div class="form-group col-sm" hidden>
+                  <label for="covidEnDavivienda">COVID-19 en Davivienda nos cuidamos</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="covidEnDavivienda" name="covidEnDavivienda" type="text" class="form-control" readonly>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm" hidden>
+                  <label for="reentrenamientoSARLAFT">Reentrenamiento SARLAFT 2020 - Áreas</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="reentrenamientoSARLAFT" name="reentrenamientoSARLAFT" type="text" class="form-control" readonly>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm" hidden>
+                  <label for="todoBajoControl">Todo Bajo Control</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="todoBajoControl" name="todoBajoControl" type="text" class="form-control" readonly>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-sm" hidden>
+                  <label for="aprendeYPasaLaVoz">Aprende y pasa la voz: Antisoborno</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="aprendeYPasaLaVoz" name="aprendeYPasaLaVoz" type="text" class="form-control" readonly>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm" hidden>
+                  <label for="dataCracks">Data Cracks: Guardianes de los datos-</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">local_hospital</i>
+                    </div>
+                    <input id="dataCracks" name="dataCracks" type="text" class="form-control" readonly>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm" hidden>
+                  <label for="fortaleceTuConocimiento">Fortalece Tu Conocimiento en FATCA y CRS 2020 Áreas Comerciales</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="fortaleceTuConocimiento" name="fortaleceTuConocimiento" type="text" class="form-control" readonly>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm" hidden>
+                  <label for="vivimosYCuidamosLosCinco">VIVIMOS Y CUIDAMOS LOS CINCO DAVIVIENDA</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="vivimosYCuidamosLosCinco" name="vivimosYCuidamosLosCinco" type="text" class="form-control" readonly>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-sm" hidden>
+                  <label for="unMundo">Un Mundo</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="unMundo" name="unMundo" type="text" class="form-control" readonly>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm">
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- <div class="card-panel color-dav-grad shadow-dav">
+              <h4 style="margin: 0px; color:white;">Plan Padrino</h4>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-sm-1">
+                <h5>4</h5>
+              </div>
+
+              <div class="form-group col-sm">
+                <label for="citaPlanPadrino">Citación Plan Padrino</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <i class="input-group-text material-icons">question_answer</i>
+                  </div>
+                  <input id="citaPlanPadrino" name="citaPlanPadrino" type="date" class="form-control">
+                </div>
+              </div>
+
+              
+            </div> -->
+
+          <!--<div class="card-panel color-dav-grad shadow-dav">
+              <h4 style="margin: 0px; color:white;">Experiencia</h4>
+            </div>
+
+            <div class="form-row">
+              <label>Con el fin de mejora continua, enviarle nuestra encuesta de satisfacción, acá nos calificará de acuerdo a su experiencia en esta etapa de aprednizaje. </label>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-sm-1">
+                <h5>6</h5>
+              </div>
+
+              <div class="form-group col-sm-3">
+                <label for="correoEncuestaSatisfaccionAprendizaje">Encuesta de Satisfacción</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <i class="input-group-text material-icons">question_answer</i>
+                  </div>
+                  <input id="correoEncuestaSatisfaccionAprendizaje" name="correoEncuestaSatisfaccionAprendizaje" type="text" class="form-control" readonly>
+                </div>
+              </div>
+
+              <div class="form-group col-sm-3">
+                <label for="fechaEnvioEncuesta">Fecha Envío</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <i class="input-group-text material-icons">question_answer</i>
+                  </div>
+                  <input id="fechaEnvioEncuesta" name="fechaEnvioEncuesta" type="date" class="form-control">
+                </div>
+              </div>
+
+              <div class="col-sm-3">
+                <button id="" type="button" class="btn btn-primary" style="margin-top: 2rem;" >Enviar</button>
+              </div>
+            </div>
+
+            <div class="card-panel color-dav-grad shadow-dav">
+              <h4 style="margin: 0px; color:white;">NPS</h4>
+            </div>
+
+            <div class="form-row">
+              <label>Al finalizar todas las etapas del Onboarding, acá el enviaremos la encuesta de NPS. </label>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-sm-1">
+                <h5>6</h5>
+              </div>
+
+              <div class="form-group col-sm-3">
+                <label for="encuestaNPS">Encuesta NPS</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <i class="input-group-text material-icons">question_answer</i>
+                  </div>
+                  <input id="encuestaNPS" name="encuestaNPS" type="text" class="form-control" readonly>
+                </div>
+              </div>
+
+              <div class="form-group col-sm-3">
+                <label for="fechaEnvioNPS">Fecha Envío</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <i class="input-group-text material-icons">question_answer</i>
+                  </div>
+                  <input id="fechaEnvioNPS" name="fechaEnvioNPS" type="date" class="form-control">
+                </div>
+              </div>
+
+            </div>-->
+        </div>
+
+        <div class="div-area div-alistamiento">
+          <div class="card-panel color-dav-grad-detalle-Alistamiento shadow-dav">
+            <h4 style="margin: 0px; color:white;">Gestion de Usuarios</h4>
+          </div>
+
+          <div class="form-row">
+            <label><?!= nota1Alistamiento ?></label>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-sm-1"></div>
+
+            <div class="form-group col-sm">
+              <div class="form-row">
+                <div class="form-group col-sm">
+                  <label for="correoElectronico">Correo Electronico</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="correoElectronico" name="correoElectronico" type="text" class="form-control">
+                  </div>
+                </div>
+
+                <div class="form-group col-sm">
+                  <label for="usuarioRed">Usuario de Red</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="usuarioRed" name="usuarioRed" type="text" class="form-control">
+                  </div>
+                </div>
+
+                <!-- <div class="form-group col-sm">
+                    <label for="concatenarCodigo">Aplicativos Instalar</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <i class="input-group-text material-icons">question_answer</i>
+                      </div>
+                      <input id="concatenarCodigo" name="concatenarCodigo" type="text" class="form-control" readonly disabled>
+                    </div>
+                  </div> -->
+
+                <div class="form-group col-sm">
+                  <label for="usuarioCorreo">¿Candidato cuenta con usuarios y correo?</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <select id="usuarioCorreo" name="usuarioCorreo" class="form-control custom-select" >
+                        <option value="" selected readonly disabled hidden>Selecciona</option>
+                      </select>
+                  </div>
+                </div>
+                <input id="usuarioDeRedFilial" name="usuarioDeRedFilial" type="text" style="display:none" class="noDeshabilitar">
+                <input id="contrasenaDeRedFilial" name="contrasenaDeRedFilial" type="text" style="display:none" class="noDeshabilitar">
+
+              </div>
+              <div class="form-row ocultarDetalles Alistamiento-beta" style="display:none">
+
+                <div class="form-group col-sm-3 ">
+                  <label for="usuarioRedFilialBeta">Usuario de Red Beta</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="usuarioRedFilialBeta" name="usuarioRedFilialBeta" type="text" data-principal="usuarioDeRedFilial" class="form-control usuarioDeRedFilial">
+                  </div>
+                </div>
+
+                <div class="form-group col-sm-3">
+                  <label for="contraseñaFilialBeta">Contraseña Beta</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="contraseñaFilialBeta" name="contraseñaFilialBeta" type="text" data-principal="contrasenaDeRedFilial" class="form-control contrasenaDeRedFilial">
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-row ocultarDetalles Alistamiento-gamma" style="display:none">
+                <div class="form-group col-sm-3">
+                  <label for="usuarioRedFilialGama">Usuario de Red Gamma</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="usuarioRedFilialGama" name="usuarioRedFilialGama" type="text" data-principal="usuarioDeRedFilial" class="form-control usuarioDeRedFilial">
+                  </div>
+                </div>
+
+                <div class="form-group col-sm-3">
+                  <label for="contraseñaFilialGamma">Contraseña Gamma</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="contraseñaFilialGamma" name="contraseñaFilialGamma" type="text" data-principal="contrasenaDeRedFilial" class="form-control contrasenaDeRedFilial">
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="col-sm-3">
+                  <button id="btn-enviarGestionUsuarios" type="button" class="btn btn-primary" style="margin-top: 2rem;">Alertamiento a gestión de usuarios</button>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="input-group">
+                  <input id="aplicativosInstalar" name="aplicativosInstalar" type="text" class="form-control" readonly disabled hidden>
+                </div>
+                <!-- <div id="aplicativosInstalar2"></div> -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="div-area div-alistamiento noRecontratatacion">
+
+
+          <div class="card-panel color-dav-grad-detalle-Alistamiento shadow-dav">
+            <h4 style="margin: 0px; color:white;">Microinformática</h4>
+          </div>
+
+          <div class="form-row">
+            <label><?!= nota2Alistamiento ?></label>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-sm-1"></div>
+
+            <div class="form-group col-sm">
+              <div class="form-row">
+                <div class="form-group col-sm">
+                  <label for="serial">Serial</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="serial" name="serial" type="text" class="form-control">
+                  </div>
+                </div>
+
+                <div class="form-group col-sm">
+                  <label for="placa">Placa</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="placa" name="placa" type="text" class="form-control">
+                  </div>
+                </div>
+
+                <div class="form-group col-sm">
+                  <label for="tipoComputador">Tipo Computador</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="tipoComputador" name="tipoComputador" type="text" class="form-control">
+                  </div>
+                </div>
+
+                <div class="form-group col-sm">
+                  <label for="modelo">Modelo</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="modelo" name="modelo" type="text" class="form-control">
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <!-- <div class="form-group col-sm">
+                    <label for="imgConfigurar">Perfil a Configurar</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <i class="input-group-text material-icons">question_answer</i>
+                      </div>
+                      <select id="imgConfigurar" name="imgConfigurar" class="form-control custom-select" >
+                        <option value="" selected readonly disabled hidden>Selecciona</option>
+                      </select>
+                    </div>
+                  </div> -->
+
+                <div class="form-group col-sm">
+                  <label for="equipoPersonalizado">Equipo Personalizado</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <select id="equipoPersonalizado" name="equipoPersonalizado" class="form-control custom-select" >
+                        <option value="" selected readonly disabled hidden>Selecciona</option>
+                      </select>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm">
+                  <label for="fechaEquiPersonalizado">Fecha Equipo Personalizado</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="fechaEquiPersonalizado" name="fechaEquiPersonalizado" type="date" class="form-control">
+                  </div>
+                </div>
+
+                <!-- <div class="form-group col-sm">
+                    <label for="empresaCecoAlistamiento">Empresa</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <i class="input-group-text material-icons">business</i>
+                      </div>
+                      <input id="empresaCecoAlistamiento" name="empresaCecoAlistamiento" type="text" class="form-control empresaCeco" readonly disabled >
+                      
+                    </div>
+                  </div> -->
+
+                <div class="form-group col-sm">
+                  <label for="tipoKit">Tipo de KIT</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <select id="tipoKit" name="tipoKit" class="form-control custom-select" >
+                        <option value="" selected readonly disabled hidden>Selecciona</option>
+                      </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-sm">
+                  <label for="kitDespachado">¿KIT Despachado?</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <select id="kitDespachado" name="kitDespachado" class="form-control custom-select" >
+                        <option value="" selected readonly disabled hidden>Selecciona</option>
+                      </select>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm">
+                  <label for="fechaDespachoKIT">Fecha de Despacho</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="fechaDespachoKIT" name="fechaDespachoKIT" type="date" class="form-control">
+                  </div>
+                </div>
+
+                <div class="form-group col-sm">
+                  <label for="tipoEquipoEntregado">Tipo de equipo entregado</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <select id="tipoEquipoEntregado" name="tipoEquipoEntregado" class="form-control custom-select" >
+                        <option value="" selected readonly disabled hidden>Selecciona</option>
+                      </select>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm">
+
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="col-sm-3">
+                  <button id="btn-enviarMicroinformatica" type="button" class="btn btn-primary" style="margin-top: 2rem;" >Enviar notificación al usuario y activar aprendizaje</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-panel color-dav-grad-detalle-Alistamiento shadow-dav no-filiales ocultarDetalles"
+            style="display:none">
+            <h4 style="margin: 0px; color:white;">Confirmación</h4>
+          </div>
+
+          <div class="form-row no-filiales ocultarDetalles" style="display:none">
+            <label><?!= nota3Alistamiento ?></label>
+          </div>
+
+          <div class="form-row no-filiales ocultarDetalles" style="display:none">
+            <div class="form-group col-sm-1"></div>
+
+            <div class="form-group col-sm-3">
+              <label for="fechaEntreTrans">Fecha Entregado Transportadora</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <i class="input-group-text material-icons">question_answer</i>
+                </div>
+                <input id="fechaEntreTrans" name="fechaEntreTrans" type="date" class="form-control">
+              </div>
+            </div>
+
+            <!-- <div class="col-sm-3">
+                <button id="btn-enviarConfirmacion" type="button" class="btn btn-primary" style="margin-top: 2rem;" >Enviar Aprendizaje</button>
+              </div> -->
+          </div>
+
+          <div class="card-panel color-dav-grad-detalle-Alistamiento shadow-dav no-filiales ocultarDetalles"
+            style="display:none">
+            <h4 style="margin: 0px; color:white;">Confirmación Nuevo Integrante</h4>
+          </div>
+
+          <div class="form-row no-filiales ocultarDetalles" style="display:none">
+            <label><?!= nota4Alistamiento ?></label>
+          </div>
+
+          <div class="form-row no-filiales ocultarDetalles" style="display:none">
+            <div class="form-group col-sm-1"></div>
+
+            <div class="form-group col-sm-3">
+              <label for="kitRecibido">¿KIT Recibido?</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <i class="input-group-text material-icons">question_answer</i>
+                </div>
+                <input id="kitRecibido" name="kitRecibido" type="text" class="form-control" readonly>
+              </div>
+            </div>
+
+            <div class="form-group col-sm-3">
+              <label for="fechaRecibidoKIT">Fecha Recibido</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <i class="input-group-text material-icons">question_answer</i>
+                </div>
+                <input id="fechaRecibidoKIT" name="fechaRecibidoKIT" type="date" class="form-control" readonly>
+              </div>
+            </div>
+
+            <div class="form-group col-sm-3">
+              <label for="accesosCorreoOK">Correo, Workspace OK</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <i class="input-group-text material-icons">question_answer</i>
+                </div>
+                <input id="accesosCorreoOK" name="accesosCorreoOK" type="text" class="form-control" readonly>
+              </div>
+            </div>
+
+            <div class="col-sm-3">
+              <button id="btn-recordatorioConfirmacion" type="button" class="btn btn-primary" style="margin-top: 2rem;" >Enviar Recordatorio</button>
+            </div>
+
+
+          </div>
+
+          <!--<div class="card-panel color-dav-grad-detalle-Alistamiento shadow-dav">
+              <h4 style="margin: 0px; color:white;">Experiencia</h4>
+            </div>
+
+            <div class="form-row">
+              <label>Con el fin de mejora continua, enviarle nuestra encuesta de satisfacción, acá nos calificará de acuerdo a su experiencia en esta etapa de alistamiento. </label>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-sm-1">
+                <h5>5</h5>
+              </div>
+
+              <div class="form-group col-sm-3">
+                <label for="correoEncuestaSatisfaccionAlistamiento">Encuesta de Satisfacción</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <i class="input-group-text material-icons">question_answer</i>
+                  </div>
+                  <input id="correoEncuestaSatisfaccionAlistamiento" name="correoEncuestaSatisfaccionAlistamiento" type="text" class="form-control" readonly>
+                </div>
+              </div>
+
+              <div class="form-group col-sm-3">
+                <label for="fechaEnvioEncuesta">Fecha Envío</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <i class="input-group-text material-icons">question_answer</i>
+                  </div>
+                  <input id="fechaEnvioEncuesta" name="fechaEnvioEncuesta" type="date" class="form-control">
+                </div>
+              </div>
+
+              <div class="col-sm-3">
+                <button id="btn-enviarExperiencia" type="button" class="btn btn-primary" style="margin-top: 2rem;" >Enviar</button>
+              </div>
+            </div>-->
+        </div>
+
+        <div class="form-row divOcultarALider">
+          <div class="form-group col-sm-4">
+            <label for="gestionado">Estado</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">check</i>
+              </div>
+              <select id="gestionado" name="gestionado" class="form-control custom-select" >
+                  <option value="" selected readonly disabled hidden>Selecciona</option>
+                </select>
+            </div>
+          </div>
+
+          <div class="col-sm-4">
+            <button id="btn-guardar-cambios" type="submit" class="btn btn-primary" style="margin-top: 2rem;" >Guardar Cambios</button>
+          </div>
+        </div>
+
+        <div class="form-row divOcultarALider div-area div-contratacion">
+          <label><b><?!= notaCasoDesistido ?></b></label>
+        </div>
+
+        <div class="form-row divOcultarALider justify-content-end">
+          <div class="form-group col-sm-3 div-desistirProceso" style="display:none">
+            <label for="motivoDesiste">Motivo</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <i class="input-group-text material-icons">check</i>
+              </div>
+              <select id="motivoDesiste" name="motivoDesiste" class="form-control custom-select noDeshabilitar" >
+                  <option value="" selected readonly disabled hidden>Selecciona</option>
+                </select>
+            </div>
+          </div>
+
+          <div class="col-sm-3 div-desistirProceso" style="display:none">
+            <button id="btn-guardar-desiste" type="button" class="btn btn-primary" style="margin-top: 2rem;" >Confirmar</button>
+          </div>
+
+          <div class="col-sm-2 div-area div-contratacion ml-auto">
+            <button id="btn-desistir" type="button" class="btn btn-secondary" style="margin-top: 2rem;" >Desistir del proceso</button>
+          </div>
+
+        </div>
+
+        <!-- //ACA -->
+
+        <div class="divLider">
+
+          <div class="card-panel color-dav-grad shadow-dav">
+            <h4 style="margin: 0px; color:white;">Confirmación Xplora</h4>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-sm-1"></div>
+
+            <div class="form-group col-sm">
+              <div class="form-row">
+                <div class="form-group col-sm">
+                  <label for="porcentajeFinalizacionInduccionLider">Porcentaje de Finalización Inducción</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="porcentajeFinalizacionInduccionLider" name="porcentajeFinalizacionInduccionLider" type="number"  class="form-control porcentajeFinalizacionInduccion" readonly>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm">
+
+                </div>
+
+                <div class="form-group col-sm">
+
+                </div>
+
+                <div class="form-group col-sm">
+
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-sm">
+                  <label for="teEstabamosEsperandoLider">Te estábamos esperando</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="teEstabamosEsperandoLider" name="teEstabamosEsperando" type="text" class="form-control teEstabamosEsperando" readonly>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm" hidden>
+                  <label for="covidEnDaviviendaLider">COVID-19 en Davivienda nos cuidamos</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="covidEnDaviviendaLider" name="covidEnDavivienda" type="text" class="form-control covidEnDavivienda" readonly>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm" hidden>
+                  <label for="reentrenamientoSARLAFTLider">Reentrenamiento SARLAFT 2020 - Áreas</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="reentrenamientoSARLAFTLider" name="reentrenamientoSARLAFTLider" type="text" class="form-control reentrenamientoSARLAFT" readonly>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm" hidden>
+                  <label for="todoBajoControlLider">Todo Bajo Control</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="todoBajoControlLider" name="todoBajoControlLider" type="text" class="form-control todoBajoControl" readonly>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-sm" hidden>
+                  <label for="aprendeYPasaLaVozLider">Aprende y pasa la voz: Antisoborno</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="aprendeYPasaLaVozLider" name="aprendeYPasaLaVozLider" type="text" class="form-control aprendeYPasaLaVoz" readonly>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm" hidden>
+                  <label for="dataCracksLider">Data Cracks: Guardianes de los datos-</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">local_hospital</i>
+                    </div>
+                    <input id="dataCracksLider" name="dataCracksLider" type="text" class="form-control dataCracks" readonly>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm" hidden>
+                  <label for="fortaleceTuConocimientoLider">Fortalece Tu Conocimiento en FATCA y CRS 2020 Áreas Comerciales</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="fortaleceTuConocimientoLider" name="fortaleceTuConocimientoLider" type="text" class="form-control fortaleceTuConocimiento" readonly>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm" hidden>
+                  <label for="vivimosYCuidamosLosCincoLider">VIVIMOS Y CUIDAMOS LOS CINCO DAVIVIENDA</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="vivimosYCuidamosLosCincoLider" name="vivimosYCuidamosLosCincoLider" type="text" class="form-control vivimosYCuidamosLosCinco" readonly>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-sm" hidden>
+                  <label for="unMundoLider">Un Mundo</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="unMundoLider" name="unMundoLider" type="text" class="form-control unMundo" readonly>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm">
+                  <label for="correoLiderAprendizajeLider">Correo Lider</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="correoLiderAprendizajeLider" name="correoLiderAprendizajeLider" type="text" class="form-control correoLider" readonly>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm">
+                  <label for="correoPadrinoAprendizajeLider">Correo Padrino</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text material-icons">question_answer</i>
+                    </div>
+                    <input id="correoPadrinoAprendizajeLider" name="correoPadrinoAprendizajeLider" type="text" class="form-control correoPadrino" readonly>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm">
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+    </form>
+  </div>
+  </div>
+
+  <?!= include('Footer'); ?>
+
+  <!-- Templates -->
+
+  <div id="templateBotonAgendaMasiva" hidden>
+    <button class="btn btn-primary" type="button" data-id="###" onclick="colapse(this)" data-toggle="collapse" data-target="grupo-tabla-masivo-###" aria-expanded="false" aria-controls="grupo-tabla-masivo-###">
+      Grupo ###
+      </button>
+  </div>
+
+  <div id="templateUsuarioRequision" hidden>
+    <div class="row">
+      <div class="col-12">
+        <b>Nombre completo:</b>
+        <p class="parrafoDescripcion">PRIMER-NOMBRE SEGUNDO-NOMBRE PRIMER-APELLIDO SEGUNDO-APELLIDO</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <b>Cédula:</b>
+        <p class="parrafoDescripcion">CEDULA-USUARIO</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <b>Fecha de ingreso:</b>
+        <p class="parrafoDescripcion">FECHA-INGRESO</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <p class="parrafoDescripcion">FALTAN: <b class="texto-color-dav"> cantidaddias días</b>
+          <b class="parrafoDescripcion">para recibir a tu nuevo integrante </b>
+        </p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-3">
+        <p>Contratacion</p>
+        <div class="progress">
+          <div class="progress-bar bg-success" role="progressbar" style="width: porcentajeContratacion%"
+            aria-valuenow="porcentajeContratacion" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+      </div>
+      <div class="col-3">
+        <p>Carnetizacion</p>
+        <div class="progress">
+          <div class="progress-bar bg-success" role="progressbar" style="width: porcentajeCarnetizacion%"
+            aria-valuenow="porcentajeCarnetizacion" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+      </div>
+      <div class="col-3">
+        <p>Alistamiento</p>
+        <div class="progress">
+          <div class="progress-bar bg-success" role="progressbar" style="width: porcentajeAlistamiento%"
+            aria-valuenow="porcentajeAlistamiento" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+      </div>
+      <div class="col-3">
+        <p>Aprendizaje</p>
+        <div class="progress">
+          <div class="progress-bar bg-success" role="progressbar" style="width: porcentajeAprendizaje%"
+            aria-valuenow="porcentajeAprendizaje" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+      </div>
+    </div>
+    <hr>
+  </div>
+  </div>
+
+  <div id="templateTabla" hidden>
+    <div id="grupo-tabla-masivo-###" class="grupo-tabla-masivo collapse">
+      <div class="form-row">
+        <div class="form-group col-sm-3">
+          <button id="btn-grupo-masivo-###" type="button" data-id="###" onclick="adicionGrupo(this)" class="btn btn-primary" style="margin-top: 2rem;" >Adicionar al grupo ###</button>
+        </div>
+
+        <div class="form-group col-sm-3">
+          <label for="fecha-grupo-###">Fecha de agendamiento grupo</label>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <i class="input-group-text material-icons">date_range</i>
+            </div>
+            <input id="fecha-grupo-###" name="fecha-grupo-###" type="datetime-local" class="form-control fechasMasivas noDeshabilitar">
+          </div>
+        </div>
+      </div>
+
+      <div id="tabla-grupo-masivo-###" style="margin: 0 auto;overflow-x: auto;">
+        <table id="tabla-grupo-###" class="table table-hover ">
+          <thead id="encabezado-###">
+            <tr id="encabezados-###">
+              <th style="min-width:200px">Selecciona <br><input type="checkbox" class="check-general noDeshabilitar" data-check="###"></th>
+              <th style="min-width:200px"> Numero Completo </th>
+              <th style="min-width:200px"> Cedula </th>
+              <th style="min-width:100px"> Eliminar </th>
+            </tr>
+          </thead>
+          <tbody id="registros-###"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="templateDetallesSinGestion" hidden>
+    <button id="btnDetalles_#id" type="button" class="btn btn-primary-sinGesion btn-detalles pendiente-detalles">Gestionar</button>
+  </div>
+
+  <div id="templateDetallesRequisicion" hidden>
+    <button id="btnDetalles_#id" type="button" class="btn btn-primary-pendiente btn-detalles-requisicion">Ver mas</button>
+  </div>
+
+  <div id="templateDetallesPendiente" hidden>
+    <button id="btnDetalles_#id" type="button" class="btn btn-primary-pendiente btn-detalles pendiente-detalles">Gestionar</button>
+  </div>
+
+  <div id="templateDetallesGestionado" hidden>
+    <button id="btnDetalles_#id" type="button" class="btn btn-primary-gestionado btn-detalles gestionado-detalles">Detalle</button>
+  </div>
+
+  <div id="templateCheck" hidden>
+    <div class="custom-control custom-checkbox text-center">
+      <input type="checkbox" class="custom-control-input check-general" id="check-#">
+      <label class="custom-control-label" for="check-#"></label>
+    </div>
+  </div>
+
+  <div id="templateTextArea" hidden>
+    <textarea id="observaciones-#" name="observaciones-#" class="form-control" ></textarea>
+  </div>
+
+  <div id="templateSelect" hidden>
+    <select id="respuesta-#" name="respuesta-#" class="form-control custom-select respuesta">
+         <option value="" selected readonly disabled hidden>Selecciona</option>
+       </select>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="modal-mensaje" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <h3 class="modal-title texto-color-dav" id="tituloModal"></h3>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <div id="mensajeModal" class="modal-body"></div>
+
+
+        <div class="modal-footer" style="border-top: none;">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- /Modal -->
+
+  <!-- Loader -->
+  <div id="loader" style="display:none">
+    <div class="text-center" style="margin: 15% auto;">
+      <div class="spinner-grow text-dark" role="status" style="width: 12rem; height: 12rem;">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+  </div>
+  <!-- /Loader -->
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <?!= include('JS'); ?>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+    integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous">
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js"
+    integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous">
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.3/moment-with-locales.min.js"></script>
+
+  <!-- <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script> -->
+
+</body>
+
+</html><!-- © Banco Davivienda S.A. 2021. Se prohíbe su uso o reproducción sin previa autorización del Banco Davivienda S.A -->
